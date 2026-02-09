@@ -1,9 +1,7 @@
 package upo.yacht.logic;
-
 import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.model.Player;
 import upo.yacht.util.DiceManager;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +11,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
-
 //private final nao impede modificar os valores dentro do array.
 //Mas impede que eu substitua to do o array por um nnovo array.
 //Ex: em algum momento eu poderia tentar this.players = new Player[2], o que
@@ -26,7 +23,6 @@ public class GameEngine {
     private final boolean isExtended; //flag que define a modalidade do jogo
     private final Scanner scanner; //variavel que pega dados do jogador: canal de comunicacao
     private int currentRound; //contador de 12 rodadas
-
     // Construtor: recebe como parametro True ou False, se True = modo variante, False = modo classico
     public GameEngine(boolean isExtended, int numPlayers, Long seed) {
         //players nao sera inicializada no construtor porque precisa do nome dos jogadores que eh
@@ -37,7 +33,6 @@ public class GameEngine {
         this.currentRound = 0; //jogo comeca na rodada 0 vai ate a 11.
         this.diceManager = new DiceManager(seed); //chama o construtor de DiceManager que inicializa os 5 dados
     }
-
     public void startGame() {
         setupPlayer();
         for (; currentRound <= 11; currentRound++) {
@@ -50,7 +45,6 @@ public class GameEngine {
         }
         finishGame();
     }
-
     //Metodo auxiliar(private, usado apenas por GameEngine) para definir o nome dos jogadores
     private void setupPlayer() {
         for (int i = 0; i < players.length; i++) {
@@ -59,7 +53,6 @@ public class GameEngine {
             this.players[i] = new Player(name);
         }
     }
-
     //Metodo auxiliar que destrava somente os dados que o usuario quer lançar.
     private boolean processRerrolChoices(String[] choices) {
         if (choices[0].equals("S")) {
@@ -73,7 +66,6 @@ public class GameEngine {
         }
         return false;
     }
-
     //Metodo auxiliar que mostra qual fase do extended mode estamos
     private void printPhaseHeader() {
         if (currentRound <= 3) {
@@ -84,7 +76,6 @@ public class GameEngine {
             System.out.println(">>> MODE: FREE (3 Rolls, Choice Category)");
         }
     }
-
     //metodo que gerencia a vez do jogador de acordo com modo e fase.
     public void executeTurn(Player p) {
         diceManager.unlockAll(); // Reset inicial do turno
@@ -122,10 +113,9 @@ public class GameEngine {
         // FASE DE PONTUAÇÃO
         handleScoring(p);
     }
-
     private void handleScoring(Player p) {
         int[] finalDice = diceManager.getDiceValues(); // Pega os números (ex: 1, 3, 3, 4, 6)
-        int categoryIndex;
+        int categoryIndex = -1;
         // 1. Definição da Categoria
         if (isExtended && currentRound <= 3) { //ou seja, DOWNWARD
             // Fase DOWNWARD: Categoria é automática (Round 1 -> Cat 0, Round 2 -> Cat 1...)
@@ -134,8 +124,22 @@ public class GameEngine {
         } else {
             // Fases Normais: Jogador escolhe
             p.getScoreboard().displayBoard(finalDice); // Mostra o que já está preenchido
-            System.out.print("Choose a category index (0-11): ");
-            categoryIndex = Integer.parseInt(scanner.nextLine());
+            while (true) {
+                System.out.print("Choose a category index (0-11): ");
+                String input = scanner.nextLine(); // Read input as String first
+                try {
+                    categoryIndex = Integer.parseInt(input); // Attempt to parse
+                    // Check if the number is within the valid array bounds (0 to 11)
+                    if (categoryIndex >= 0 && categoryIndex <= 11) {
+                        break; // Valid input found, exit the loop
+                    } else {
+                        System.out.println("Error: Number must be between 0 and 11.");
+                    }
+                } catch (NumberFormatException e) {
+                    // Handle non-numeric input like "s"
+                    System.out.println("Error: '" + input + "' is not a valid number.");
+                }
+            }
         }
         // 2. Cálculo (Aqui chamamos a classe Scorer que vamos criar)
         int points = Scorer.getScore(categoryIndex, finalDice);
@@ -148,7 +152,6 @@ public class GameEngine {
             handleScoring(p); // Recursão simples para tentar de novo se estiver ocupada
         }
     }
-
     public void finishGame() {
         System.out.println("\n" + "=".repeat(50));
         System.out.println("GAME OVER - FINAL RESULTS");
@@ -185,11 +188,9 @@ public class GameEngine {
         System.out.println("CONGRATULATIONS " + sortedPlayers[0].getName() + "! ");
         System.out.println("YOU ARE THE YACHT CHAMPION!");
         System.out.println("*".repeat(20));
-
         // Offer to save results
         handleSaveResults(sortedPlayers);
     }
-
     private void handleSaveResults(Player[] sortedPlayers) {
         System.out.print("\nDo you want to save the results to a file? (y/n): ");
         String response = scanner.nextLine().trim().toLowerCase();
@@ -209,10 +210,8 @@ public class GameEngine {
             }
         }
     }
-
     private void saveScoreboardToFile(Player[] sortedPlayers, String filePath) throws IOException {
         Path path = Paths.get(filePath);
-
         // Create parent directories if they don't exist
         Path parentDir = path.getParent();
         if (parentDir != null) {
