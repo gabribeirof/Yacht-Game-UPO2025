@@ -1,0 +1,29 @@
+YACHT (DICE GAME)
+=================
+GAMEPLAY CLASSIC:
+1. The game consists of twelve rounds.
+2. In each turn, a player rolls five dice up to three times.
+3. After each turn, the player chooses which scoring category to use.
+4. Once a category is used, it cannot be used again.
+5. A Yacht is five-of-a-kind and scores 50 points (the highest category).
+6. The winner is the player with the most points.
+GAMEPLAY EXTENDED:
+ /º/º/º/º/º/º/º/º/
+SCORING CATEGORIES:
+Category        Description          Score Rule         Example
+--------------- -------------------- ------------------ --------------------
+Ones            Any combination      Sum of ones        1-1-1-2-5 scores 3
+Twos            Any combination      Sum of twos        2-2-2-4-5 scores 6
+Threes          Any combination      Sum of threes      3-3-3-1-2 scores 9
+Fours           Any combination      Sum of fours       4-4-4-2-1 scores 12
+Fives           Any combination      Sum of fives       5-5-5-1-2 scores 15
+Sixes           Any combination      Sum of sixes       6-6-6-1-2 scores 18
+Full House      Three equal + pair   Sum of all dice    3-3-3-2-2 scores 13
+Four of a Kind  At least four equal  Sum of those four  4-4-4-4-2 scores 16
+Small Straight  Seq. 1-2-3-4-5       30 (Fixed)         1-2-3-4-5 scores 30
+Big Straight    Seq. 2-3-4-5-6       30 (Fixed)         2-3-4-5-6 scores 30
+Choice          Any combination      Sum of all dice    Any roll scores Sum
+Yacht           Five equal dice      50 (Fixed)         5-5-5-5-5 scores 50
+
+NOTES:
+- If a category is chosen but dice do not match, score is 0.
