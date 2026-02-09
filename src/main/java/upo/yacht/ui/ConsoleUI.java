@@ -1,21 +1,26 @@
 package upo.yacht.ui;
+
 import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.logic.GameEngine;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Scanner;
+
 public class ConsoleUI {
     private final Scanner scanner;
     private final boolean isExtended;
     // Store seed if provided via constructor or setter
     private Long seed;
+
     // Constructor that accepts a seed for deterministic gameplay
     public ConsoleUI(Long seed, boolean isExtended) {
         this.scanner = new Scanner(System.in);
         this.seed = seed;
         this.isExtended = isExtended;
     }
+
     public void start() {
         printWelcome();
         handleRules();
@@ -27,11 +32,13 @@ public class ConsoleUI {
         GameEngine engine = new GameEngine(isExtended, playerCount, seed);
         engine.startGame();
     }
+
     private void printWelcome() {
         System.out.println("╔════════════════════════════════╗");
         System.out.println("║        Welcome to Yacht!       ║");
         System.out.println("╚════════════════════════════════╝");
     }
+
     //Funcao que pergunta se o jogador quer ler as regras, se sim,
     //é aberto um file com as regras e mostrado em tela.
     private void handleRules() {
@@ -50,6 +57,7 @@ public class ConsoleUI {
             System.out.println("---you already know the rules, let's go---");
         }
     }
+
     private int askPlayerCount() {
         int numberOfPlayers = 0;
         while (numberOfPlayers < 2) {

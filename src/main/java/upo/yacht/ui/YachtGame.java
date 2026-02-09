@@ -1,4 +1,5 @@
 package upo.yacht.ui;
+
 /**
  * The entry point for the Yacht game application.
  * <p>

@@ -1,4 +1,5 @@
 package upo.yacht.util;
+
 /**
  * Utility class for dice operations in the Yacht game.
  * This class provides static helper methods to calculate sums and
@@ -10,6 +11,7 @@ public final class DiceUtils {
      */
     private DiceUtils() {
     }
+
     /**
      * Calculates the sum of all dice values in the provided array.
      *
@@ -23,6 +25,7 @@ public final class DiceUtils {
         }
         return sum;
     }
+
     /**
      * Generates a frequency array representing how many times each dice value appears.
      *

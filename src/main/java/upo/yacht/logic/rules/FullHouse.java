@@ -1,14 +1,18 @@
 package upo.yacht.logic.rules;
+
 import upo.yacht.util.DiceUtils;
+
 //Full House: Quando tenho 2 dados de um tipo e 3 de outros.
 // Os pontos eh a soma de todos os dados.
 //Ex: [2, 2, 5, 5, 5] -> pontos = 19
 public class FullHouse implements ScoringRule {
     String categoryName = "Full House";
+
     @Override
     public String getName() {
         return categoryName;
     }
+
     @Override
     public int calculate(int[] diceValues) {
         // 1. Pegamos a frequência de cada face (1 a 6)

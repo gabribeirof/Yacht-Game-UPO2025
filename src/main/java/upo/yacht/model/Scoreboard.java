@@ -1,7 +1,9 @@
 package upo.yacht.model;
+
 import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.logic.Scorer;
 import upo.yacht.util.DiceUtils;
+
 /**
  * Manages the scoring for a single player in Yacht.
  * Tracks which categories have been used and their scores.
@@ -12,6 +14,7 @@ public class Scoreboard {
     private final int[] scores;
     // Tracks whether each category has been filled
     private final boolean[] categoryUsed;
+
     /**
      * Creates an empty scoreboard with all categories available.
      */
@@ -19,6 +22,7 @@ public class Scoreboard {
         this.scores = new int[NUM_CATEGORIES];
         this.categoryUsed = new boolean[NUM_CATEGORIES]; // defaults to false
     }
+
     /**
      * Registers a score for a specific category.
      *
@@ -42,6 +46,7 @@ public class Scoreboard {
         scores[categoryIndex] = points;
         categoryUsed[categoryIndex] = true;
     }
+
     /**
      * Checks if a category has been used.
      *
@@ -55,6 +60,7 @@ public class Scoreboard {
         }
         return categoryUsed[categoryIndex];
     }
+
     /**
      * Gets the score for a specific category.
      *
@@ -68,6 +74,7 @@ public class Scoreboard {
         }
         return scores[categoryIndex];
     }
+
     /**
      * Calculates the total score across all filled categories.
      *
@@ -76,6 +83,7 @@ public class Scoreboard {
     public int getTotalScore() {
         return DiceUtils.sumDice(scores);
     }
+
     /**
      * Displays the current scoreboard state in the console.
      * Shows which categories are filled and which are available.
@@ -105,6 +113,7 @@ public class Scoreboard {
         System.out.printf("|| TOTAL                    : %3d\n", getTotalScore());
         System.out.println("|| ================================\n");
     }
+
     /**
      * Helper method to get category names by index.
      * Uses the Scorer class to maintain consistency.
@@ -116,6 +125,7 @@ public class Scoreboard {
         // We'll use Scorer to get the name, since it already has the rule array
         return upo.yacht.logic.Scorer.getCategoryName(index);
     }
+
     /**
      * Gets a formatted string representation of the scoreboard.
      * Useful for file saving.

@@ -13,8 +13,8 @@ GAMEPLAY EXTENDED:
 2.  Downward phase: strict top-to-bottom filling of the column (starting
     from Ones), requiring players to score even when suboptimal (example: with
     you must score 0 in Ones)
-3.  1st Roll phase: only one dice roll allowed per turn ("dry hits"), with
-    choice constrained to categories matching the first roll result
+3.  1st Roll phase: only one die roll allowed per turn ("dry hits"), with
+    choice constrained to categorize matching the first roll result
     (example: with you choose among Ones, Fours, Full House, or Choice)
 4.  Free phase: complete freedom in choosing categories to fill the column,
     as in the classic version of the game
