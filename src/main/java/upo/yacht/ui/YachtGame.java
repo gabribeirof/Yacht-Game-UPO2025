@@ -15,7 +15,7 @@ import java.util.Random;
 public class YachtGame {
 
     /**
-     * The main method acts as the application driver.
+     * The main method acts as the application driver
      * <p>
      * Supported command-line arguments:
      * <ul>
