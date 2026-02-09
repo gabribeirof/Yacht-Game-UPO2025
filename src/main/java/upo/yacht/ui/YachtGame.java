@@ -1,9 +1,5 @@
 package upo.yacht.ui;
 
-import upo.yacht.model.Die;
-
-import java.util.Random;
-
 /**
  * The entry point for the Yacht game application.
  * <p>
@@ -25,7 +21,7 @@ public class YachtGame {
      *
      * @param args The command line arguments passed to the application.
      */
-    public static void main(String[] args) {
+    static void main(String[] args) {
         Long seed = null;           // Default to null (standard random)
         boolean isExtended = false;  // Default to normal mode (false)
 

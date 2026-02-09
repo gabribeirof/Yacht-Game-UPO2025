@@ -27,13 +27,6 @@ public class Die {
     }
 
     /**
-     * Toggles or sets the lock state of the die.
-     */
-    public void setLocked(boolean locked) {
-        this.isLocked = locked;
-    }
-
-    /**
      * Returns the current value of the die.
      */
     public int getValue() {
@@ -48,8 +41,15 @@ public class Die {
     }
 
     /**
-     * Resets the die to its initial state for the next round.
+     * Toggles or sets the lock state of the die.
      */
+    public void setLocked(boolean locked) {
+        this.isLocked = locked;
+    }
+
+    /*
+     * Resets the die to its initial state for the next round.
+
     public void reset() {
         this.isLocked = false;
         this.value = 1;
@@ -57,7 +57,7 @@ public class Die {
 
     public int getFaces() {
         return FACES;
-    }
+    }*/
 
     @Override
     public String toString() {

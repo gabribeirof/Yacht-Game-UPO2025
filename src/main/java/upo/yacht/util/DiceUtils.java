@@ -10,7 +10,8 @@ public final class DiceUtils {
     /**
      * Private constructor to prevent instantiation of this utility class.
      */
-    private DiceUtils() {}
+    private DiceUtils() {
+    }
 
     /**
      * Calculates the sum of all dice values in the provided array.

@@ -1,19 +1,19 @@
 package upo.yacht.util;
 
 import upo.yacht.model.Die;
-import java.util.Random; // You were also missing this import!
+
+import java.util.Random;
 
 public class DiceManager {
     //O objeto DiceManager eh um array de 5 dados.
     private final Die[] dice;
-    private final Random random;
 
     //Construtor do array de dados
     public DiceManager(Long seed) {
-        this.random = (seed != null) ? new Random(seed) : new Random();
+        Random random = (seed != null) ? new Random(seed) : new Random();
         this.dice = new Die[5];
         for (int i = 0; i < dice.length; i++) {
-            dice[i] = new Die(this.random);
+            dice[i] = new Die(random);
         }
     }
 

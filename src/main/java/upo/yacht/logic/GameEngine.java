@@ -2,9 +2,16 @@ package upo.yacht.logic;
 
 import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.model.Player;
-import upo.yacht.model.Die;
 import upo.yacht.util.DiceManager;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
 
 /* private final nao impede modificar os valores dentro do array.
@@ -157,9 +164,131 @@ public class GameEngine {
     }
 
     public void finishGame() {
-        System.out.println("End of the game. Calculating results ... ");
-        // Aqui virá a lógica de salvar no arquivo .txt
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("🎲 GAME OVER - FINAL RESULTS 🎲");
+        System.out.println("=".repeat(50));
+
+        // Sort players by score (descending)
+        Player[] sortedPlayers = Arrays.copyOf(players, players.length);
+        Arrays.sort(sortedPlayers, Comparator.comparingInt(Player::getTotalScore).reversed());
+
+        // Display final scores
+        System.out.println("\n🏆 FINAL SCOREBOARD:");
+        System.out.println("-".repeat(40));
+
+        for (int i = 0; i < sortedPlayers.length; i++) {
+            Player player = sortedPlayers[i];
+            String trophy = "";
+            if (i == 0) trophy = "🥇 ";
+            else if (i == 1 && sortedPlayers.length > 1) trophy = "🥈 ";
+            else if (i == 2 && sortedPlayers.length > 2) trophy = "🥉 ";
+
+            System.out.printf("%s%-20s: %5d points%n",
+                    trophy, player.getName(), player.getTotalScore());
+
+            // Display individual category scores
+            System.out.println("  Categories:");
+            for (int cat = 0; cat < 12; cat++) {
+                if (player.getScoreboard().isCategoryUsed(cat)) {
+                    System.out.printf("    %-18s: %3d%n",
+                            Scorer.getCategoryName(cat),
+                            player.getScoreboard().getScore(cat));
+                }
+            }
+            System.out.println();
+        }
+
+        // Announce winner
+        System.out.println("\n" + "🎉".repeat(20));
+        System.out.println("CONGRATULATIONS " + sortedPlayers[0].getName() + "! 🏆");
+        System.out.println("YOU ARE THE YACHT CHAMPION! 🎊");
+        System.out.println("🎉".repeat(20));
+
+        // Offer to save results
+        handleSaveResults(sortedPlayers);
     }
+
+    private void handleSaveResults(Player[] sortedPlayers) {
+        System.out.print("\n📁 Do you want to save the results to a file? (y/n): ");
+        String response = scanner.nextLine().trim().toLowerCase();
+
+        if (response.equals("y") || response.equals("yes")) {
+            System.out.print("Enter file path (e.g., scores.txt): ");
+            String filePath = scanner.nextLine().trim();
+
+            try {
+                saveScoreboardToFile(sortedPlayers, filePath);
+                System.out.println("✅ Results saved successfully to: " + filePath);
+            } catch (IOException e) {
+                System.err.println("❌ Error saving file: " + e.getMessage());
+                System.out.print("Try another path? (y/n): ");
+                String retry = scanner.nextLine().trim().toLowerCase();
+                if (retry.equals("y") || retry.equals("yes")) {
+                    handleSaveResults(sortedPlayers);
+                }
+            }
+        }
+    }
+
+    private void saveScoreboardToFile(Player[] sortedPlayers, String filePath) throws IOException {
+        Path path = Paths.get(filePath);
+
+        // Create parent directories if they don't exist
+        Path parentDir = path.getParent();
+        if (parentDir != null) {
+            Files.createDirectories(parentDir);
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write("=".repeat(50));
+            writer.newLine();
+            writer.write("YACHT GAME - FINAL SCOREBOARD");
+            writer.newLine();
+            writer.write("=".repeat(50));
+            writer.newLine();
+            writer.newLine();
+
+            writer.write("Game Mode: " + (isExtended ? "Extended" : "Classic"));
+            writer.newLine();
+            writer.write("Players: " + sortedPlayers.length);
+            writer.newLine();
+            writer.write("-".repeat(50));
+            writer.newLine();
+            writer.newLine();
+
+            // Write player standings
+            for (int i = 0; i < sortedPlayers.length; i++) {
+                Player player = sortedPlayers[i];
+
+                writer.write(String.format("%d. %s", i + 1, player.getName()));
+                writer.newLine();
+                writer.write(String.format("   Total Score: %d points", player.getTotalScore()));
+                writer.newLine();
+
+                // Write category details
+                writer.write("   Category Breakdown:");
+                writer.newLine();
+                for (int cat = 0; cat < 12; cat++) {
+                    if (player.getScoreboard().isCategoryUsed(cat)) {
+                        writer.write(String.format("     %-18s: %3d%n",
+                                Scorer.getCategoryName(cat),
+                                player.getScoreboard().getScore(cat)));
+                    }
+                }
+                writer.newLine();
+            }
+
+            writer.write("=".repeat(50));
+            writer.newLine();
+            writer.write(String.format("WINNER: %s", sortedPlayers[0].getName()));
+            writer.newLine();
+            writer.write("=".repeat(50));
+
+            System.out.println("📄 Scoreboard saved to: " + path.toAbsolutePath());
+        }
+    }
+
+
 }
 
 

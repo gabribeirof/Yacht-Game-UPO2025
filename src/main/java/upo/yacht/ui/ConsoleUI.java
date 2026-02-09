@@ -2,6 +2,7 @@ package upo.yacht.ui;
 
 import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.logic.GameEngine;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,8 +13,8 @@ de arquivo, perguntas iniciais, etc */
 
 public class ConsoleUI {
     private final Scanner scanner;
-    private Long seed; // Store seed if provided via constructor or setter
     private final boolean isExtended;
+    private Long seed; // Store seed if provided via constructor or setter
 
     /**
      * Constructor that accepts a seed for deterministic gameplay.

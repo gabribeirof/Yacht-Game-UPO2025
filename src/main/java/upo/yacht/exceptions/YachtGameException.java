@@ -19,7 +19,7 @@ public class YachtGameException extends Exception {
      * Creates a new exception with a message and a cause.
      *
      * @param message the error message
-     * @param cause the underlying exception that caused this error
+     * @param cause   the underlying exception that caused this error
      */
     public YachtGameException(String message, Throwable cause) {
         super(message, cause);

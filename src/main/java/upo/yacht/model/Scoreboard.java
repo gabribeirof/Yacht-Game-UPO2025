@@ -2,6 +2,7 @@ package upo.yacht.model;
 
 import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.logic.Scorer;
+import upo.yacht.util.DiceUtils;
 
 /**
  * Manages the scoring for a single player in Yacht.
@@ -28,15 +29,15 @@ public class Scoreboard {
      * Registers a score for a specific category.
      *
      * @param categoryIndex the index of the category (0-11)
-     * @param points the points to register
-     * @throws IllegalStateException if the category is already used
+     * @param points        the points to register
+     * @throws IllegalStateException    if the category is already used
      * @throws IllegalArgumentException if the category index is invalid
      */
     public void registerScore(int categoryIndex, int points) throws YachtGameException {
         // Java exige que você declare explicitamente que esse metodo pode ser que lance esse erro.
         // Validate index
         if (categoryIndex < 0 || categoryIndex >= NUM_CATEGORIES) {
-            throw new IllegalArgumentException( "Invalid category index: " + categoryIndex + ". Must " +
+            throw new IllegalArgumentException("Invalid category index: " + categoryIndex + ". Must " +
                     "be between 0 and " + (NUM_CATEGORIES - 1));
         }
 
@@ -58,7 +59,7 @@ public class Scoreboard {
      */
     public boolean isCategoryUsed(int categoryIndex) {
         if (categoryIndex < 0 || categoryIndex >= NUM_CATEGORIES) {
-            throw new IllegalArgumentException( "Invalid category index: " + categoryIndex + ". Must " +
+            throw new IllegalArgumentException("Invalid category index: " + categoryIndex + ". Must " +
                     "be between 0 and " + (NUM_CATEGORIES - 1));
         }
         return categoryUsed[categoryIndex];
@@ -72,7 +73,7 @@ public class Scoreboard {
      */
     public int getScore(int categoryIndex) {
         if (categoryIndex < 0 || categoryIndex >= NUM_CATEGORIES) {
-            throw new IllegalArgumentException( "Invalid category index: " + categoryIndex + ". Must " +
+            throw new IllegalArgumentException("Invalid category index: " + categoryIndex + ". Must " +
                     "be between 0 and " + (NUM_CATEGORIES - 1));
         }
         return scores[categoryIndex];
@@ -84,11 +85,7 @@ public class Scoreboard {
      * @return the sum of all scores
      */
     public int getTotalScore() {
-        int total = 0;
-        for (int score : scores) {
-            total += score;
-        }
-        return total;
+        return DiceUtils.sumDice(scores);
     }
 
     /**
@@ -135,25 +132,52 @@ public class Scoreboard {
         return upo.yacht.logic.Scorer.getCategoryName(index);
     }
 
-    /**
+    /*
      * Counts how many categories have been filled.
      *
      * @return the number of used categories
      */
-    public int getUsedCategoriesCount() {
-        int count = 0;
-        for (boolean used : categoryUsed) {
-            if (used) count++;
-        }
-        return count;
-    }
+    //public int getUsedCategoriesCount() {
+    //    int count = 0;
+    //    for (boolean used : categoryUsed) {
+    //        if (used) count++;
+    //    }
+    //    return count;
+    //}
+
+    //
+     //* Checks if the scoreboard is complete (all categories filled).
+     //*
+     //* @return true if all 12 categories are used
+     //*/
+    // public boolean isComplete() {
+    //    return getUsedCategoriesCount() == NUM_CATEGORIES;
+    //}
 
     /**
-     * Checks if the scoreboard is complete (all categories filled).
+     * Gets a formatted string representation of the scoreboard.
+     * Useful for file saving.
      *
-     * @return true if all 12 categories are used
+     * @return formatted scoreboard string
      */
-    public boolean isComplete() {
-        return getUsedCategoriesCount() == NUM_CATEGORIES;
+    public String getFormattedScoreboard() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Scoreboard:\n");
+        sb.append("-".repeat(30)).append("\n");
+
+        for (int i = 0; i < NUM_CATEGORIES; i++) {
+            String categoryName = getCategoryName(i);
+            String scoreStr = categoryUsed[i] ? String.valueOf(scores[i]) : "---";
+            String checkmark = categoryUsed[i] ? "✓" : " ";
+
+            sb.append(String.format("[%s] %-18s : %3s %s%n",
+                    checkmark, categoryName, scoreStr, checkmark));
+        }
+
+        sb.append("-".repeat(30)).append("\n");
+        sb.append(String.format("TOTAL                : %3d%n", getTotalScore()));
+        sb.append("=".repeat(30)).append("\n");
+
+        return sb.toString();
     }
 }
