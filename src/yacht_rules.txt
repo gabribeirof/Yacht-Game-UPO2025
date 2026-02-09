@@ -1,14 +1,30 @@
 YACHT (DICE GAME)
 =================
 GAMEPLAY CLASSIC:
-1. The game consists of twelve rounds.
-2. In each turn, a player rolls five dice up to three times.
-3. After each turn, the player chooses which scoring category to use.
-4. Once a category is used, it cannot be used again.
-5. A Yacht is five-of-a-kind and scores 50 points (the highest category).
-6. The winner is the player with the most points.
+1.  The game consists of twelve rounds.
+2.  In each turn, a player rolls five dice up to three times.
+3.  After each turn, the player chooses which scoring category to use.
+4.  Once a category is used, it cannot be used again.
+5.  A Yacht is five-of-a-kind and scores 50 points (the highest category).
+6.  The winner is the player with the most points.
 GAMEPLAY EXTENDED:
- /º/º/º/º/º/º/º/º/
+1.  Three-phase variant structure: Downward, 1st Roll, and Free, with three
+    corresponding columns on the scoreboard for each player
+2.  Downward phase: strict top-to-bottom filling of the column (starting
+    from Ones), requiring players to score even when suboptimal (example: with
+    you must score 0 in Ones)
+3.  1st Roll phase: only one dice roll allowed per turn ("dry hits"), with
+    choice constrained to categories matching the first roll result
+    (example: with you choose among Ones, Fours, Full House, or Choice)
+4.  Free phase: complete freedom in choosing categories to fill the column,
+    as in the classic version of the game
+5.  Common rule for all phases: must score 0 points in an available category
+    when the combination doesn't match any remaining category
+6.  Turn order: determined randomly at the start of the game and kept fixed
+    for all phases and all rounds
+7.  Yacht scoring note: cannot be obtained with a Full House, but can be obtained
+    with a Four of a Kind (though the fifth die is not counted in the score)
+
 SCORING CATEGORIES:
 Category        Description          Score Rule         Example
 --------------- -------------------- ------------------ --------------------

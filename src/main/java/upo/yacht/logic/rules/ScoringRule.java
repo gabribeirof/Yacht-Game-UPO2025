@@ -1,7 +1,7 @@
 package upo.yacht.logic.rules;
-
 public interface ScoringRule {
-    public abstract int calculate(int[] dice); // Recebe os valores dos dados e retorna os pontos
-
-    public abstract String getName();          // Retorna o nome da categoria (ex: "Full House")
+    // Recebe os valores dos dados e retorna os pontos
+    public abstract int calculate(int[] dice);
+    // Retorna o nome da categoria (ex: "Full House")
+    public abstract String getName();
 }

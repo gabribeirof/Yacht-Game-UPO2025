@@ -1,5 +1,4 @@
 package upo.yacht.ui;
-
 /**
  * The entry point for the Yacht game application.
  * <p>
@@ -9,7 +8,6 @@ package upo.yacht.ui;
  * </p>
  */
 public class YachtGame {
-
     /**
      * The main method acts as the application driver
      * <p>
@@ -24,7 +22,6 @@ public class YachtGame {
     static void main(String[] args) {
         Long seed = null;           // Default to null (standard random)
         boolean isExtended = false;  // Default to normal mode (false)
-
         // Parse command line arguments
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
@@ -55,7 +52,6 @@ public class YachtGame {
                 }
             }
         }
-
         // Create UI with seed and start the game
         ConsoleUI ui = new ConsoleUI(seed, isExtended);
         ui.start();
