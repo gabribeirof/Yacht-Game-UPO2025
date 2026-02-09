@@ -1,39 +1,37 @@
 package upo.yacht.ui;
 
+import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.logic.GameEngine;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+
+/* ENQUANTO GameEngine cuida da logica do jogo, ConsoleUI cuida das leituras
+de arquivo, perguntas iniciais, etc */
 
 public class ConsoleUI {
     private final Scanner scanner;
     private Long seed; // Store seed if provided via constructor or setter
-
-    public ConsoleUI() {
-        this.scanner = new Scanner(System.in);
-        this.seed = null; // Default: no seed (random gameplay)
-    }
+    private final boolean isExtended;
 
     /**
      * Constructor that accepts a seed for deterministic gameplay.
      */
-    public ConsoleUI(Long seed) {
+    public ConsoleUI(Long seed, boolean isExtended) {
         this.scanner = new Scanner(System.in);
         this.seed = seed;
+        this.isExtended = isExtended;
     }
 
-    /**
+    /* QUAL SENTIDO DE UM SETSEED SE A SEED EH DEFINIDA EM LINHA DE COMANDO ?
+
+
      * Sets the random seed for the game.
-     */
+
     public void setSeed(Long seed) {
         this.seed = seed;
-    }
+    } */
 
     public void start() {
         printWelcome();
@@ -41,9 +39,11 @@ public class ConsoleUI {
 
         int playerCount = askPlayerCount();
 
-        // We don't need to ask for names here  - GameEngine will handle it
-        // But we need to know if it's extended mode
-        boolean isExtended = askGameStyle();
+        /*Mode foi definido em linha de comando e esta contido na variavel
+        isExtended. Se for true eh EXTENDED se for false eh CLASSIC
+         */
+        System.out.println("Mode: " + (isExtended ? "Extended" : "Classic"));
+
 
         // CREATE AND START THE ACTUAL GAME ENGINE
         GameEngine engine = new GameEngine(isExtended, playerCount, seed);
@@ -56,6 +56,9 @@ public class ConsoleUI {
         System.out.println("╚════════════════════════════════╝");
     }
 
+    /* Funcao que pergunta se o jogador quer ler as regras, se sim,
+    eh aberto um file com as regras e mostrado em tela.
+     */
     private void handleRules() {
         System.out.print("Do you want to read the rules? (y/n): ");
         String response = scanner.nextLine().trim().toLowerCase();
@@ -78,37 +81,25 @@ public class ConsoleUI {
             System.out.print("How many players (minimum 2)? ");
             try {
                 String input = scanner.nextLine();
-                numberOfPlayers = Integer.parseInt(input);
-                if (numberOfPlayers < 2) {
-                    System.out.println("Please enter at least 2 players.");
+
+                // 1. O parseInt pode lançar NumberFormatException (exceção nativa)
+                try {
+                    numberOfPlayers = Integer.parseInt(input);
+                } catch (NumberFormatException e) {
+                    // Transformamos um erro genérico do Java em um YachtGameException
+                    throw new YachtGameException("'" + input + "' is not a valid number.");
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid number.");
+
+                // 2. Verificação da regra de negócio: Minimo 2 jogadores
+                if (numberOfPlayers < 2) {
+                    throw new YachtGameException("The game requires at least 2 players to start.");
+                }
+
+            } catch (YachtGameException e) {
+                //capturamos as excecoes personalizadas caso sejam lancadas.
+                System.out.println("Error: " + e.getMessage());
             }
         }
         return numberOfPlayers;
     }
-
-    private boolean askGameStyle() {
-        System.out.println("\nSelect game style:");
-        System.out.println("  [1] Classic");
-        System.out.println("  [2] Extended Version");
-
-        while (true) {
-            System.out.print("> ");
-            String input = scanner.nextLine().trim();
-
-            if (input.equals("1") || input.equalsIgnoreCase("classic")) {
-                System.out.println("Starting Classic mode...\n");
-                return false; // Classic = not extended
-            }
-            if (input.equals("2") || input.equalsIgnoreCase("extended")) {
-                System.out.println("Starting Extended mode...\n");
-                return true; // Extended = true
-            }
-
-            System.out.println("Please enter '1' for Classic or '2' for Extended.");
-        }
-    }
-
 }

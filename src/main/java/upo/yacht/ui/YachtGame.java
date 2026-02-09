@@ -27,7 +27,7 @@ public class YachtGame {
      */
     public static void main(String[] args) {
         Long seed = null;           // Default to null (standard random)
-        boolean isVariant = false;  // Default to normal mode (false)
+        boolean isExtended = false;  // Default to normal mode (false)
 
         // Parse command line arguments
         for (int i = 0; i < args.length; i++) {
@@ -46,12 +46,12 @@ public class YachtGame {
                 case "--mode" -> {
                     if (i + 1 < args.length) {
                         String modeTag = args[i + 1];
-                        if (modeTag.equalsIgnoreCase("variante")) {
-                            isVariant = true;
-                        } else if (modeTag.equalsIgnoreCase("normal")) {
-                            isVariant = false;
+                        if (modeTag.equalsIgnoreCase("extended")) {
+                            isExtended = true;
+                        } else if (modeTag.equalsIgnoreCase("classic")) {
+                            isExtended = false;
                         } else {
-                            System.err.println("Invalid mode: " + modeTag + ". Must be 'normal' or 'variante'.");
+                            System.err.println("Invalid mode: " + modeTag + ". Must be 'classic' or 'extended'.");
                             System.exit(1);
                         }
                         i++; // Advance index to skip the value
@@ -61,7 +61,7 @@ public class YachtGame {
         }
 
         // Create UI with seed and start the game
-        ConsoleUI ui = new ConsoleUI(seed);
+        ConsoleUI ui = new ConsoleUI(seed, isExtended);
         ui.start();
     }
 }

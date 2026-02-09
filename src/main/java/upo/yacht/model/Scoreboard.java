@@ -1,5 +1,8 @@
 package upo.yacht.model;
 
+import upo.yacht.exceptions.YachtGameException;
+import upo.yacht.logic.Scorer;
+
 /**
  * Manages the scoring for a single player in Yacht.
  * Tracks which categories have been used and their scores.
@@ -29,20 +32,17 @@ public class Scoreboard {
      * @throws IllegalStateException if the category is already used
      * @throws IllegalArgumentException if the category index is invalid
      */
-    public void registerScore(int categoryIndex, int points) {
+    public void registerScore(int categoryIndex, int points) throws YachtGameException {
+        // Java exige que você declare explicitamente que esse metodo pode ser que lance esse erro.
         // Validate index
         if (categoryIndex < 0 || categoryIndex >= NUM_CATEGORIES) {
-            throw new IllegalArgumentException(
-                    "Invalid category index: " + categoryIndex +
-                            ". Must be between 0 and " + (NUM_CATEGORIES - 1)
-            );
+            throw new IllegalArgumentException( "Invalid category index: " + categoryIndex + ". Must " +
+                    "be between 0 and " + (NUM_CATEGORIES - 1));
         }
 
         // Check if already used
         if (categoryUsed[categoryIndex]) {
-            throw new IllegalStateException(
-                    "Category " + categoryIndex + " is already filled!"
-            );
+            throw new YachtGameException("Category " + getCategoryName(categoryIndex) + " is already filled!");
         }
 
         // Register the score
@@ -58,7 +58,8 @@ public class Scoreboard {
      */
     public boolean isCategoryUsed(int categoryIndex) {
         if (categoryIndex < 0 || categoryIndex >= NUM_CATEGORIES) {
-            return false;
+            throw new IllegalArgumentException( "Invalid category index: " + categoryIndex + ". Must " +
+                    "be between 0 and " + (NUM_CATEGORIES - 1));
         }
         return categoryUsed[categoryIndex];
     }
@@ -71,7 +72,8 @@ public class Scoreboard {
      */
     public int getScore(int categoryIndex) {
         if (categoryIndex < 0 || categoryIndex >= NUM_CATEGORIES) {
-            return 0;
+            throw new IllegalArgumentException( "Invalid category index: " + categoryIndex + ". Must " +
+                    "be between 0 and " + (NUM_CATEGORIES - 1));
         }
         return scores[categoryIndex];
     }
@@ -93,7 +95,7 @@ public class Scoreboard {
      * Displays the current scoreboard state in the console.
      * Shows which categories are filled and which are available.
      */
-    public void displayBoard() {
+    public void displayBoard(int[] CurrentDice) {
         System.out.println("\n|| ========== SCOREBOARD ==========");
 
         for (int i = 0; i < NUM_CATEGORIES; i++) {
@@ -101,18 +103,24 @@ public class Scoreboard {
 
             if (categoryUsed[i]) {
                 // Category already filled - show the score with checkmark
-                System.out.printf("|| [%2d] %-20s : %3d ✓\n",
-                        i, categoryName, scores[i]);
+                System.out.printf("[%2d] %-20s (Points: %3d) : %3d ✓\n",
+                        i, categoryName, 0, scores[i]);
             } else {
-                // Category available - show as empty
-                System.out.printf("|| [%2d] %-20s : ---\n",
-                        i, categoryName);
+                if (CurrentDice != null) {
+                    // Category available - show as empty
+                    System.out.printf("[%2d] %-20s (Points: %3d) : ---\n",
+                            i, categoryName, Scorer.getScore(i, CurrentDice));
+                } else {
+                    // Caso não queira mostrar previsões
+                    System.out.printf("|| [%2d] %-20s : ---\n", i, categoryName);
+                }
             }
         }
 
         System.out.println("|| --------------------------------");
         System.out.printf("|| TOTAL                    : %3d\n", getTotalScore());
         System.out.println("|| ================================\n");
+
     }
 
     /**

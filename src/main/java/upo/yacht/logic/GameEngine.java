@@ -1,5 +1,6 @@
 package upo.yacht.logic;
 
+import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.model.Player;
 import upo.yacht.model.Die;
 import upo.yacht.util.DiceManager;
@@ -137,7 +138,7 @@ public class GameEngine {
             System.out.println("Downward Phase: Scoring automatically in category " + categoryIndex);
         } else {
             // Fases Normais: Jogador escolhe
-            p.getScoreboard().displayBoard(); // Mostra o que já está preenchido
+            p.getScoreboard().displayBoard(finalDice); // Mostra o que já está preenchido
             System.out.print("Choose a category index (0-11): ");
             categoryIndex = Integer.parseInt(scanner.nextLine());
         }
@@ -149,7 +150,7 @@ public class GameEngine {
         try {
             p.getScoreboard().registerScore(categoryIndex, points);
             System.out.println("Points registered: " + points);
-        } catch (IllegalStateException e) {
+        } catch (YachtGameException e) {
             System.out.println("Error: Category already filled! Choose another one.");
             handleScoring(p); // Recursão simples para tentar de novo se estiver ocupada
         }

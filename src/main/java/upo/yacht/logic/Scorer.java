@@ -57,4 +57,3 @@ public class Scorer {
         return RULES[index].getName();
     }
 }
-/* CRIAR DICE UTIL COM GERAR FREQ E SOMA DADOS */
