@@ -1,58 +1,19 @@
 package upo.yacht.logic;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 import upo.yacht.exceptions.YachtGameException;
-
-
-
-
-
-
-
-
 import upo.yacht.model.Player;
-
-
-
-
-
-
-
-
 import upo.yacht.util.DiceManager;
 
-
 import java.io.BufferedWriter;
-
 import java.io.IOException;
-
 import java.nio.charset.StandardCharsets;
-
 import java.nio.file.Files;
-
 import java.nio.file.Path;
-
 import java.nio.file.Paths;
-
 import java.util.Arrays;
-
 import java.util.Comparator;
-
 import java.util.Scanner;
-
 
 
 //private final nao impede modificar os valores dentro do array.
@@ -80,7 +41,6 @@ public class GameEngine {
     private int currentRound; //contador de 12 rodadas
 
 
-
     // Construtor: recebe como parametro True ou False, se True = modo variante, False = modo classico
 
     public GameEngine(boolean isExtended, int numPlayers, Long seed) {
@@ -100,7 +60,6 @@ public class GameEngine {
         this.diceManager = new DiceManager(seed); //chama o construtor de DiceManager que inicializa os 5 dados
 
     }
-
 
 
     public void startGame() {
@@ -127,7 +86,6 @@ public class GameEngine {
     }
 
 
-
     //Metodo auxiliar(private, usado apenas por GameEngine) para definir o nome dos jogadores
 
     private void setupPlayer() {
@@ -143,7 +101,6 @@ public class GameEngine {
         }
 
     }
-
 
 
     //Metodo auxiliar que destrava somente os dados que o usuario quer lançar.
@@ -173,7 +130,6 @@ public class GameEngine {
     }
 
 
-
     //Metodo auxiliar que mostra qual fase do extended mode estamos
 
     private void printPhaseHeader() {
@@ -193,7 +149,6 @@ public class GameEngine {
         }
 
     }
-
 
 
     //metodo que gerencia a vez do jogador de acordo com modo e fase.
@@ -278,13 +233,11 @@ public class GameEngine {
             }
 
 
-
             if (!isValid) {
 
                 continue; // Skip the rest and retry
 
             }
-
 
 
             diceManager.lockAll();
@@ -301,7 +254,6 @@ public class GameEngine {
 
         handleScoring(p);
     }
-
 
 
     private void handleScoring(Player p) {
@@ -341,24 +293,6 @@ public class GameEngine {
                     if (categoryIndex >= 0 && categoryIndex <= 11) {
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         break; // Valid input found, exit the loop
 
                     } else {
@@ -374,13 +308,6 @@ public class GameEngine {
                     System.out.println("Error: '" + input + "' is not a valid number.");
 
 
-
-
-
-
-
-
-
                 }
 
             }
@@ -388,33 +315,11 @@ public class GameEngine {
         }
 
 
-
-
-
-
-
         // 2. Cálculo (Aqui chamamos a classe Scorer que vamos criar)
 
         int points = Scorer.getScore(categoryIndex, finalDice);
 
         // 3. Registro no Placar
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         try {
@@ -434,42 +339,6 @@ public class GameEngine {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void finishGame() {
 
         System.out.println("\n" + "=".repeat(50));
@@ -485,35 +354,10 @@ public class GameEngine {
         Arrays.sort(sortedPlayers, Comparator.comparingInt(Player::getTotalScore).reversed());
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         // Display final scores
 
 
-
-
-
         System.out.println("\nFINAL SCOREBOARD:");
-
-
-
-
-
 
 
         System.out.println("-".repeat(40));
@@ -527,26 +371,6 @@ public class GameEngine {
             } else if (i == 2 && sortedPlayers.length > 2) {
                 trophy = "3 ";
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
             System.out.printf("%s%-20s: %5d points%n", trophy, player.getName(), player.getTotalScore());
@@ -566,37 +390,6 @@ public class GameEngine {
         System.out.println("YOU ARE THE YACHT CHAMPION!");
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         System.out.println("*".repeat(20));
         // Offer to save results
         handleSaveResults(sortedPlayers);
@@ -609,39 +402,6 @@ public class GameEngine {
         if (response.startsWith("y")) {
             System.out.print("Enter file name (e.g., scores.txt): ");
             String fileName = scanner.nextLine().trim();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
             // 1. Resolve the path relative to where the JAR is running
@@ -662,20 +422,6 @@ public class GameEngine {
                     handleSaveResults(sortedPlayers);
                 }
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         }
