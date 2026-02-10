@@ -66,8 +66,8 @@ public class ConsoleUI {
 
     private int askPlayerCount() {
         int numberOfPlayers = 0;
-        while (numberOfPlayers < 2) {
-            System.out.print("How many players (minimum 2)? ");
+        while (numberOfPlayers < 1) {
+            System.out.print("How many players (minimum 1)? ");
             try {
                 String input = scanner.nextLine();
                 // 1. O parseInt pode lançar NumberFormatException (exceção nativa)
@@ -77,9 +77,9 @@ public class ConsoleUI {
                     // Transformamos um erro genérico do Java em um YachtGameException
                     throw new YachtGameException("'" + input + "' is not a valid number.");
                 }
-                // 2. Verificação da regra de negócio: Minimo 2 jogadores
-                if (numberOfPlayers < 2) {
-                    throw new YachtGameException("The game requires at least 2 players to start.");
+                // 2. Verificação da regra de negócio: Minimo 1 jogador
+                if (numberOfPlayers < 1) {
+                    throw new YachtGameException("The game requires at least 1 player to start.");
                 }
             } catch (YachtGameException e) {
                 //capturamos as excecoes personalizadas caso sejam lancadas.
