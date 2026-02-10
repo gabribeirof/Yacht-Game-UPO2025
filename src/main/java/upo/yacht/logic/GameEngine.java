@@ -220,8 +220,8 @@ public class GameEngine {
                     }
                 }
             }
-            handleScoring(p);
         }
+        handleScoring(p);
     }
 
     private int askForCategory() {
