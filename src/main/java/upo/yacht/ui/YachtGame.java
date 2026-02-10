@@ -20,7 +20,7 @@ public class YachtGame {
      *
      * @param args The command line arguments passed to the application.
      */
-    static void main(String[] args) {
+    public static void main(String[] args) {
         Long seed = null;           // Default to null (standard random)
         boolean isExtended = false;  // Default to normal mode (false)
         // Parse command line arguments

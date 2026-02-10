@@ -4,7 +4,6 @@ package upo.yacht.logic;
 import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.model.Player;
 import upo.yacht.util.DiceManager;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -156,7 +155,6 @@ public class GameEngine {
     public void executeTurn(Player p) {
 
         diceManager.unlockAll(); // Reset inicial do turno
-
         int maxRolls;
 
         // Define o limite de lances se for extended mode: 1 para a fase '1st Roll', 3 para as demais
@@ -164,96 +162,68 @@ public class GameEngine {
         // rodadas 5, 6, 7 e 8 so posso lancar o dado 1 vez
 
         if (isExtended) {
-
             maxRolls = (currentRound >= 4 && currentRound <= 7) ? 1 : 3;
-
         } else {
-
             maxRolls = 3;
-
         }
 
         for (int j = 0; j < maxRolls; j++) {
-
             diceManager.rollAvailableDice();
-
             diceManager.displayDice(); //mostra os dados lancados
 
             int rollsLeft = (maxRolls - 1) - j;
-
+            // Se nao houver mais lancamentos ou se for a fase 1 de lancamento unico, termina
             if (rollsLeft == 0) {
-
                 break;
-
             }
 
             if (isExtended) {
-
                 printPhaseHeader();
-
             }
-
-            // Em Downward (0-3) e Free (8-11), o jogador pode escolher os dados que quer lancar.
 
             System.out.println("Rolls left: " + rollsLeft);
-
             System.out.print("Which dice do you want to REROLL?\n" +
-
                     "type the dice numbers from 0 to 4 or x to keep the values:   ");
 
-            String input = scanner.nextLine().toUpperCase();
+            String input;
+            String[] choices;
 
-            if (input.isEmpty()) {
-
-                break;
-
-            }
-
-            String[] choices = input.split("[\\s,]+");
-
-            // Validate before proceeding
-
-            boolean isValid = true;
-
-            for (String choice : choices) {
-
-                if (!choice.matches("[0-4]") && !choice.equals("X")) {
-
-                    System.out.println("Invalid input! Please try again.");
-
-                    j--; // Retry this roll
-
-                    isValid = false;
-
+            //loop de validacao que nao relanca os dados se o usuario digitar errado
+            while (true) {
+                input = scanner.nextLine().toUpperCase().trim();
+                if (input.isEmpty()) {
+                    choices = new String[]{"X"};
                     break;
-
-
+                }
+                choices = input.split("[\\s,]+");
+                boolean inputOK = true;
+                for (String s : choices) {
+                    if (!s.matches("[0-4]") && !s.equals("X")) {
+                        System.out.print("Invalid! Use 0-4 or X: ");
+                        inputOK = false;
+                        break;
+                    }
+                }
+                if (inputOK) {
+                    break;
                 }
 
+                if (choices[0].equals("X")) {
+                    break;
+                }
+
+                //trava tudo e destrava so o que foi escolhido pro proximo roll
+                diceManager.lockAll();
+                for (String s : choices) {
+                    if (s.matches("[0-4]")) {
+                        diceManager.getDie(Integer.parseInt(s)).setLocked(false);
+                    }
+                }
             }
-
-
-            if (!isValid) {
-
-                continue; // Skip the rest and retry
-
-            }
-
-
-            diceManager.lockAll();
-
-            if (processRerrolChoices(choices)) {
-
-                break;
-
-            }
+            handleScoring(p);
         }
-
-
-        // FASE DE PONTUAÇÃO
-
-        handleScoring(p);
     }
+
 
 
     private void handleScoring(Player p) {
