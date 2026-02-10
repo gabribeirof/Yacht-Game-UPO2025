@@ -2,8 +2,9 @@ package upo.yacht.logic.rules;
 
 import upo.yacht.util.DiceUtils;
 
-//FourOfAKind tenho que ter 4 dados com mesmo valor. O resultado eh a soma dos dados iguais.
-//Ex: [2, 2, 2, 2, 5] --> pontos = 8
+// Four of a kind rule
+// if I have 4 dice with the same value i add then together
+// Ex: [2, 2, 2, 2, 5] --> score = 8
 public class FourOfAKind implements ScoringRule {
     String categoryName = "Four of a Kind";
 

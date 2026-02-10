@@ -2,9 +2,9 @@ package upo.yacht.logic.rules;
 
 import upo.yacht.util.DiceUtils;
 
-//Big Straight
-//5 dice in sequency at any order
-//40 points
+// Big Straight  rule
+// 5 dice of the same dice at any order
+// 40 points
 public class BigStraight implements ScoringRule {
     String categoryName = "Big Straight";
 

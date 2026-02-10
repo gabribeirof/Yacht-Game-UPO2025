@@ -2,8 +2,9 @@ package upo.yacht.logic.rules;
 
 import upo.yacht.util.DiceUtils;
 
-//Soma todos os dados com valor 5.
-//Ex: [5, 5, 5, 1, 6] -> pontos = 15
+// Fives rule
+// Sum all the 5's dice
+// Ex: [5, 5, 5, 1, 6] -> score = 15
 public class Fives implements ScoringRule {
     String categoryName = "Fives";
 
