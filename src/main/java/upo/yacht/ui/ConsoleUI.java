@@ -46,7 +46,7 @@ public class ConsoleUI {
         System.out.print("Do you want to read the rules? (y/n): ");
         String response = scanner.nextLine().trim().toLowerCase();
         if (response.startsWith("y")) {
-            String path = "src/yacht_rules.txt";
+            String path = "/srd/main/java/upo/yacht/ui/yacht_rules.txt";
             try (InputStream inputStream = getClass().getResourceAsStream(path)) {
                 if (inputStream == null) {
                     System.err.println("File not found! Check the path: " + path);
