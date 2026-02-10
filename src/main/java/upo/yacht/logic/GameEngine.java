@@ -224,89 +224,61 @@ public class GameEngine {
         }
     }
 
+    private int askForCategory() {
+        while (true) {
+            System.out.print("Choose a category index (0-11): ");
+            String input = scanner.nextLine();
+            try {
+                int idx = Integer.parseInt(input);
+                if (idx >= 0 && idx <= 11) return idx;
+                System.out.println("Error: Number must be between 0 and 11.");
+            } catch (NumberFormatException e) {
+                System.out.println("Error: '" + input + "' is not a valid number.");
+            }
+        }
+    }
+
 
 
     private void handleScoring(Player p) {
 
         int[] finalDice = diceManager.getDiceValues(); // Pega os números (ex: 1, 3, 3, 4, 6)
-
         int categoryIndex = -1;
 
         // 1. Definição da Categoria
-
         if (isExtended && currentRound <= 3) { //ou seja, DOWNWARD
 
             // Fase DOWNWARD: Categoria é automática (Round 1 -> Cat 0, Round 2 -> Cat 1...)
-
             categoryIndex = currentRound;
-
             System.out.println("Downward Phase: Scoring automatically in category " + categoryIndex);
-
         } else {
-
             // Fases Normais: Jogador escolhe
-
-            p.getScoreboard().displayBoard(finalDice); // Mostra o que já está preenchido
-
-            while (true) {
-
-                System.out.print("Choose a category index (0-11): ");
-
-                String input = scanner.nextLine(); // Read input as String first
-
-                try {
-
-                    categoryIndex = Integer.parseInt(input); // Attempt to parse
-
-                    // Check if the number is within the valid array bounds (0 to 11)
-
-                    if (categoryIndex >= 0 && categoryIndex <= 11) {
-
-
-                        break; // Valid input found, exit the loop
-
-                    } else {
-
-                        System.out.println("Error: Number must be between 0 and 11.");
-
-                    }
-
-                } catch (NumberFormatException e) {
-
-                    // Handle non-numeric input like "s"
-
-                    System.out.println("Error: '" + input + "' is not a valid number.");
-
-
-                }
-
-            }
-
+            p.getScoreboard().displayBoard(finalDice);
+            categoryIndex = askForCategory();
         }
-
-
         // 2. Cálculo (Aqui chamamos a classe Scorer que vamos criar)
 
         int points = Scorer.getScore(categoryIndex, finalDice);
 
-        // 3. Registro no Placar
+        //aviso que marcou 0 pontos
+        if (points == 0) {
+            System.out.println("⚠️  ATTENTION: These dice scored 0 in " + Scorer.getCategoryName(categoryIndex));
+        }
 
 
         try {
-
             p.getScoreboard().registerScore(categoryIndex, points);
-
             System.out.println("Points registered: " + points);
-
         } catch (YachtGameException e) {
-
-            System.out.println("Error: Category already filled! Choose another one.");
-
-            handleScoring(p); // Recursão simples para tentar de novo se estiver ocupada
-
+            if (isExtended && currentRound <= 3) {
+                System.out.println("ERROR: Downward category already filled.");
+            } else {
+                System.out.println("Error: Category already filled! Choose another one.");
+                handleScoring(p); // Recursão simples para tentar de novo se estiver ocupada
+            }
         }
-
     }
+
 
 
     public void finishGame() {
