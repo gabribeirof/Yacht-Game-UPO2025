@@ -55,11 +55,21 @@ public class DiceManager {
 
     // Mostra os dados na tela com os índices para o jogador se orientar
     public void displayDice() {
-        System.out.println("\n--- CURRENT DICE ---");
+        System.out.print(
+                "\n" +
+                "------------------CURRENT DICE TABLE-------------------" +
+                "\n" +
+                "            ⟪    "
+        );
         for (int i = 0; i < dice.length; i++) {
-            String status = dice[i].isLocked() ? "[L]" : "[ ]";
-            System.out.print("ID " + i + ": (" + dice[i].getValue() + ") " + status + "   ");
+            System.out.print(dice[i].getValue() + "    ");
         }
-        System.out.println("\n--------------------");
+        System.out.println(
+                "⟫" +
+                "\n" +
+                "-------------------------------------------------------"
+        );
+
+
     }
 }
