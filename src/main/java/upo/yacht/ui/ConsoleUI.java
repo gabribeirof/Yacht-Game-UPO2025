@@ -4,8 +4,8 @@ import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.logic.GameEngine;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class ConsoleUI {
@@ -41,12 +41,18 @@ public class ConsoleUI {
 
     //Funcao que pergunta se o jogador quer ler as regras, se sim,
     //é aberto um file com as regras e mostrado em tela.
+    //alterei a funçao para funcionar com o build de .jar
     private void handleRules() {
         System.out.print("Do you want to read the rules? (y/n): ");
         String response = scanner.nextLine().trim().toLowerCase();
         if (response.startsWith("y")) {
-            try {
-                String rules = Files.readString(Path.of("src/yacht_rules.txt"));
+            String path = "src/yacht_rules.txt";
+            try (InputStream inputStream = getClass().getResourceAsStream(path)) {
+                if (inputStream == null) {
+                    System.err.println("File not found! Check the path: " + path);
+                    return;
+                }
+                String rules = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
                 System.out.println("\n--- RULES ---");
                 System.out.println(rules);
                 System.out.println("-------------\n");
