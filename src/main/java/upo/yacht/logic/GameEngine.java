@@ -4,6 +4,7 @@ package upo.yacht.logic;
 import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.model.Player;
 import upo.yacht.util.DiceManager;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -239,7 +240,6 @@ public class GameEngine {
     }
 
 
-
     private void handleScoring(Player p) {
 
         int[] finalDice = diceManager.getDiceValues(); // Pega os números (ex: 1, 3, 3, 4, 6)
@@ -278,7 +278,6 @@ public class GameEngine {
             }
         }
     }
-
 
 
     public void finishGame() {
