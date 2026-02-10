@@ -262,7 +262,7 @@ public class GameEngine {
 
         //aviso que marcou 0 pontos
         if (points == 0) {
-            System.out.println("⚠️  ATTENTION: These dice scored 0 in " + Scorer.getCategoryName(categoryIndex));
+            System.out.println("ATTENTION: These dice scored 0 in " + Scorer.getCategoryName(categoryIndex));
         }
 
 
