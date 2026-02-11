@@ -180,7 +180,7 @@ public class GameEngine {
     private void handleScoring(Player p) {
 
         int[] finalDice = diceManager.getDiceValues(); // Pega os números (ex: 1, 3, 3, 4, 6)
-        int categoryIndex = -1;
+        int categoryIndex;
 
         // 1. Definição da Categoria
         if (isExtended && currentRound <= 3) { //ou seja, DOWNWARD
@@ -247,7 +247,7 @@ public class GameEngine {
             } else if (i == 2 && sortedPlayers.length > 2) {
                 trophy = "3 ";
             }*/
-            String rankLabel = "";
+            String rankLabel;
 
             // Lógica de Rank com Empate:
             // Se a pontuação for igual à do primeiro colocado, ele também é #1
