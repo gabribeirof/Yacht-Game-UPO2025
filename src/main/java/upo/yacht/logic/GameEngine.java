@@ -4,6 +4,8 @@ import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.model.Player;
 import upo.yacht.util.DiceManager;
 
+import java.util.Collections;
+import java.util.ArrayList;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -39,10 +41,17 @@ public class GameEngine {
 
     public void startGame() {
         setupPlayer();
+
+        // Criamos uma lista a partir do array para poder usar o shuffle
+        ArrayList<Player> playerList = new ArrayList<>(Arrays.asList(players));
+        // Embaralha a lista (Usa o Random interno ou você pode passar a sua seed)
+        Collections.shuffle(playerList);
+        System.out.println("\n--- The players were shuffled !! ---"); // Agora a lista está em ordem aleatória
+
         for (; currentRound <= 11; currentRound++) {
-            System.out.println("\n=== ROUND " + currentRound + " ===");
+            System.out.println("\n=== ROUND " + (currentRound + 1) + " ===");
             //Loop que percorre os jogadores, define de quem eh a vez de jogar
-            for (Player p : players) {
+            for (Player p : playerList) {
                 System.out.println("\nIt is: " + p.getName() + " turn.");
                 executeTurn(p);
             }
@@ -65,30 +74,6 @@ public class GameEngine {
 
     }
 
-    //Metodo auxiliar que destrava somente os dados que o usuario quer lançar.
-    private boolean processRerrolChoices(String[] choices) {
-
-        if (choices[0].equals("X")) {
-
-            return true;
-
-        }
-
-        for (String s : choices) {
-
-            if (s.matches("[0-4]")) {
-
-                int index = Integer.parseInt(s);
-
-                diceManager.getDie(index).setLocked(false);
-
-            }
-
-        }
-
-        return false;
-
-    }
 
     //Metodo auxiliar que mostra qual fase do extended mode estamos
     private void printPhaseHeader() {
@@ -155,18 +140,22 @@ public class GameEngine {
                         break;
                     }
                 }
-                if (inputOK) {
-                    break;
-                }
-                if (choices[0].equals("X")) {
-                    break;
-                }
-                //trava tudo e destrava so o que foi escolhido pro proximo roll
-                diceManager.lockAll();
-                for (String s : choices) {
-                    if (s.matches("[0-4]")) {
-                        diceManager.getDie(Integer.parseInt(s)).setLocked(false);
-                    }
+                if (inputOK) break;
+            }
+
+            // 2. LÓGICA DE TRAVAR/DESTRAVAR (Agora fora do while de validação)
+            if (choices[0].equals("X")) {
+                break; // Se o usuário digitou X, sai do loop de lançamentos e vai pontuar
+            }
+
+            // Trava todos os dados primeiro
+            diceManager.lockAll();
+
+            // Destrava APENAS os dados que o usuário escolheu para o próximo roll
+            for (String s : choices) {
+                if (s.matches("[0-4]")) {
+                    int index = Integer.parseInt(s);
+                    diceManager.getDie(index).setLocked(false);
                 }
             }
         }
