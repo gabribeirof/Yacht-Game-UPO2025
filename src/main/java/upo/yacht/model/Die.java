@@ -2,6 +2,7 @@ package upo.yacht.model;
 
 import java.util.Random;
 
+
 public class Die {
     private static final int FACES = 6;
     private final Random random;

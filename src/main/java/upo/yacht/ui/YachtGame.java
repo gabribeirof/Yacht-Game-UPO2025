@@ -1,28 +1,50 @@
 package upo.yacht.ui;
 
-/**
- * The entry point for the Yacht game application.
- * <p>
- * This class handles command-line argument parsing to configure the game state,
- * specifically setting the random seed for deterministic gameplay and selecting
- * the game mode (normal or variant).
- * </p>
- */
+/// Entry point for the **Yacht Dice Game**.
+///
+/// This class parses command-line arguments to configure the game mode and random seed,
+/// then launches the console-based user interface.
+///
+/// ## Command-Line Arguments
+///
+/// | Argument   | Value      | Description                                    |
+/// |------------|------------|------------------------------------------------|
+/// | `--seed`   | `<long>`   | Sets the random number generator seed          |
+/// | `--mode`   | `classic`  | Plays standard Yacht rules                     |
+/// | `--mode`   | `extended` | Plays with extended scoring categories         |
+///
+/// ## Usage Examples
+///
+/// Standard random mode:
+/// ```bash
+/// java upo.yacht.ui.YachtGame
+/// ```
+///
+/// With fixed seed for reproducible gameplay:
+/// ```bash
+/// java upo.yacht.ui.YachtGame --seed 42
+/// ```
+///
+/// Extended mode with seed:
+/// ```bash
+/// java upo.yacht.ui.YachtGame --mode extended --seed 12345
+/// ```
+
 public class YachtGame {
-    /**
-     * The main method acts as the application driver
-     * <p>
-     * Supported command-line arguments:
-     * <ul>
-     *   <li>{@code --seed <number>}: Sets a seed for the Random number generator (for testing/reproducibility).</li>
-     *   <li>{@code --mode <string>}: Sets the game mode. Accepted values are 'normal' or 'variante'.</li>
-     * </ul>
-     *
-     * @param args The command line arguments passed to the application.
-     */
+
+    /// Parses command-line arguments and starts the Yacht game.
+    ///
+    /// Recognized arguments:
+    /// - `--seed <value>`: Sets the random seed (must be a valid `long`)
+    /// - `--mode <classic|extended>`: Selects game variant
+    ///
+    /// The program exits with status `1` if invalid arguments are provided.
+    ///
+    /// @param args Command-line arguments
     static void main(String[] args) {
         Long seed = null;           // Default to null (standard random)
         boolean isExtended = false;  // Default to normal mode (false)
+
         // Parse command line arguments
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
@@ -53,6 +75,7 @@ public class YachtGame {
                 }
             }
         }
+
         // Create UI with seed and start the game
         ConsoleUI ui = new ConsoleUI(seed, isExtended);
         ui.start();

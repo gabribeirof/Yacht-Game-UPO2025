@@ -1,6 +1,5 @@
 package upo.yacht.logic;
 
-
 import upo.yacht.exceptions.YachtGameException;
 import upo.yacht.model.Player;
 import upo.yacht.util.DiceManager;
@@ -15,79 +14,43 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
 
-
 //private final nao impede modificar os valores dentro do array.
-
-//Mas impede que eu substitua to do o array por um nnovo array.
-
+//Mas impede que eu substitua to do o array por um novo array.
 //Ex: em algum momento eu poderia tentar this.players = new Player[2], o que
-
 //substituiria o array antigo pelo novo.
-
-//
-
 //Classe que controla o jogo
-
 public class GameEngine {
-
     private final Player[] players; //array de jogadores
-
     private final DiceManager diceManager; //objeto que representa um array de dados
-
     private final boolean isExtended; //flag que define a modalidade do jogo
-
     private final Scanner scanner; //variavel que pega dados do jogador: canal de comunicacao
-
     private int currentRound; //contador de 12 rodadas
 
-
     // Construtor: recebe como parametro True ou False, se True = modo variante, False = modo classico
-
     public GameEngine(boolean isExtended, int numPlayers, Long seed) {
-
         //players nao sera inicializada no construtor porque precisa do nome dos jogadores que eh
-
         //inserido pelo usuario, portanto sera inicializada no metodo starGame.
-
         this.players = new Player[numPlayers];
-
         this.isExtended = isExtended;
-
         this.scanner = new Scanner(System.in);
-
         this.currentRound = 0; //jogo comeca na rodada 0 vai ate a 11.
-
         this.diceManager = new DiceManager(seed); //chama o construtor de DiceManager que inicializa os 5 dados
-
     }
-
 
     public void startGame() {
-
         setupPlayer();
-
         for (; currentRound <= 11; currentRound++) {
-
             System.out.println("\n=== ROUND " + currentRound + " ===");
-
             //Loop que percorre os jogadores, define de quem eh a vez de jogar
-
             for (Player p : players) {
-
                 System.out.println("\nIt is: " + p.getName() + " turn.");
-
                 executeTurn(p);
             }
-
         }
-
         finishGame();
-
     }
 
-
     //Metodo auxiliar(private, usado apenas por GameEngine) para definir o nome dos jogadores
-
     private void setupPlayer() {
 
         for (int i = 0; i < players.length; i++) {
@@ -102,9 +65,7 @@ public class GameEngine {
 
     }
 
-
     //Metodo auxiliar que destrava somente os dados que o usuario quer lançar.
-
     private boolean processRerrolChoices(String[] choices) {
 
         if (choices[0].equals("X")) {
@@ -129,9 +90,7 @@ public class GameEngine {
 
     }
 
-
     //Metodo auxiliar que mostra qual fase do extended mode estamos
-
     private void printPhaseHeader() {
 
         if (currentRound <= 3) {
@@ -150,16 +109,11 @@ public class GameEngine {
 
     }
 
-
     //metodo que gerencia a vez do jogador de acordo com modo e fase.
-
     public void executeTurn(Player p) {
-
         diceManager.unlockAll(); // Reset inicial do turno
         int maxRolls;
-
         // Define o limite de lances se for extended mode: 1 para a fase '1st Roll', 3 para as demais
-
         // rodadas 5, 6, 7 e 8 so posso lancar o dado 1 vez
 
         if (isExtended) {
@@ -171,21 +125,17 @@ public class GameEngine {
         for (int j = 0; j < maxRolls; j++) {
             diceManager.rollAvailableDice();
             diceManager.displayDice(); //mostra os dados lancados
+            int rollsLeft = (maxRolls - 1) - j;// Se nao houver mais lancamentos ou se for a fase 1 de lancamento unico, termina
 
-            int rollsLeft = (maxRolls - 1) - j;
-            // Se nao houver mais lancamentos ou se for a fase 1 de lancamento unico, termina
             if (rollsLeft == 0) {
                 break;
             }
-
             if (isExtended) {
                 printPhaseHeader();
             }
 
             System.out.println("Rolls left: " + rollsLeft);
-            System.out.print("Which dice do you want to REROLL?\n" +
-                    "type the dice numbers from 0 to 4 or x to keep the values:   ");
-
+            System.out.print("Which dice do you want to REROLL?\n" + "type the dice numbers from 0 to 4 or x to keep the values:   ");
             String input;
             String[] choices;
 
@@ -208,11 +158,9 @@ public class GameEngine {
                 if (inputOK) {
                     break;
                 }
-
                 if (choices[0].equals("X")) {
                     break;
                 }
-
                 //trava tudo e destrava so o que foi escolhido pro proximo roll
                 diceManager.lockAll();
                 for (String s : choices) {
@@ -222,6 +170,7 @@ public class GameEngine {
                 }
             }
         }
+
         handleScoring(p);
     }
 
@@ -238,7 +187,6 @@ public class GameEngine {
             }
         }
     }
-
 
     private void handleScoring(Player p) {
 
@@ -279,7 +227,6 @@ public class GameEngine {
         }
     }
 
-
     public void finishGame() {
 
         System.out.println("\n" + "=".repeat(50));
@@ -319,8 +266,7 @@ public class GameEngine {
             System.out.println("  Categories:");
             for (int cat = 0; cat < 12; cat++) {
                 if (player.getScoreboard().isCategoryUsed(cat)) {
-                    System.out.printf("    %-18s: %3d%n", Scorer.getCategoryName(cat),
-                            player.getScoreboard().getScore(cat));
+                    System.out.printf("    %-18s: %3d%n", Scorer.getCategoryName(cat), player.getScoreboard().getScore(cat));
                 }
             }
             System.out.println();
@@ -411,9 +357,7 @@ public class GameEngine {
                 for (int cat = 0; cat < 12; cat++) {
                     if (player.getScoreboard().isCategoryUsed(cat)) {
                         // %n is the portable way to do a newline inside String.format
-                        writer.write(String.format("     %-18s: %3d%n",
-                                Scorer.getCategoryName(cat),
-                                player.getScoreboard().getScore(cat)));
+                        writer.write(String.format("     %-18s: %3d%n", Scorer.getCategoryName(cat), player.getScoreboard().getScore(cat)));
                     }
                 }
                 writer.newLine();
@@ -426,4 +370,5 @@ public class GameEngine {
             writer.write("=".repeat(50));
         }
     }
+
 }
