@@ -235,22 +235,30 @@ public class GameEngine {
 
 
         System.out.println("\nFINAL SCOREBOARD:");
-
-
         System.out.println("-".repeat(40));
+
         for (int i = 0; i < sortedPlayers.length; i++) {
             Player player = sortedPlayers[i];
-            String trophy = "";
+            /*String trophy = "";
             if (i == 0) {
                 trophy = "#1 ";
             } else if (i == 1 && sortedPlayers.length > 1) {
                 trophy = "#2 ";
             } else if (i == 2 && sortedPlayers.length > 2) {
                 trophy = "3 ";
+            }*/
+            String rankLabel = "";
+
+            // Lógica de Rank com Empate:
+            // Se a pontuação for igual à do primeiro colocado, ele também é #1
+            if (player.getTotalScore() == sortedPlayers[0].getTotalScore()) {
+                rankLabel = "#1 ";
+            } else {
+                rankLabel = "   "; // Espaço para manter o alinhamento
             }
 
 
-            System.out.printf("%s%-20s: %5d points%n", trophy, player.getName(), player.getTotalScore());
+            System.out.printf("%s%-20s: %5d points%n", /*trophy*/rankLabel, player.getName(), player.getTotalScore());
             // Display individual category scores
             System.out.println("  Categories:");
             for (int cat = 0; cat < 12; cat++) {
@@ -262,11 +270,29 @@ public class GameEngine {
         }
         // Announce winner
         System.out.println("\n" + "*".repeat(20));
-        System.out.println("CONGRATULATIONS " + sortedPlayers[0].getName() + "! ");
+        /*System.out.println("CONGRATULATIONS " + sortedPlayers[0].getName() + "! ");
         System.out.println("YOU ARE THE YACHT CHAMPION!");
 
+        System.out.println("*".repeat(20)); */
+
+        int topScore = sortedPlayers[0].getTotalScore();
+        boolean multiWinners = sortedPlayers.length > 1 && sortedPlayers[1].getTotalScore() == topScore;
+
+        if (multiWinners) {
+            System.out.print("CONGRATULATIONS: ");
+            for (Player p : sortedPlayers) {
+                if (p.getTotalScore() == topScore) {
+                    System.out.print(p.getName() + " ");
+                }
+            }
+            System.out.println("\nYOU ARE ALL YACHT CHAMPIONS!");
+        } else {
+            System.out.println("CONGRATULATIONS " + sortedPlayers[0].getName() + "! ");
+            System.out.println("YOU ARE THE YACHT CHAMPION!");
+        }
 
         System.out.println("*".repeat(20));
+
         // Offer to save results
         handleSaveResults(sortedPlayers);
     }
