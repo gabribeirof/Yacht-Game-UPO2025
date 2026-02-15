@@ -41,13 +41,11 @@ public class GameEngine {
 
     public void startGame() {
         setupPlayer();
-
         // Criamos uma lista a partir do array para poder usar o shuffle
         ArrayList<Player> playerList = new ArrayList<>(Arrays.asList(players));
         // Embaralha a lista (Usa o Random interno ou você pode passar a sua seed)
         Collections.shuffle(playerList);
         System.out.println("\n--- The players were shuffled !! ---"); // Agora a lista está em ordem aleatória
-
         for (; currentRound <= 11; currentRound++) {
             System.out.println("\n=== ROUND " + (currentRound + 1) + " ===");
             //Loop que percorre os jogadores, define de quem eh a vez de jogar
@@ -61,37 +59,22 @@ public class GameEngine {
 
     //Metodo auxiliar(private, usado apenas por GameEngine) para definir o nome dos jogadores
     private void setupPlayer() {
-
         for (int i = 0; i < players.length; i++) {
-
             System.out.print("Type player " + (i + 1) + "'s name: ");
-
             String name = scanner.nextLine();
-
             this.players[i] = new Player(name);
-
         }
-
     }
-
 
     //Metodo auxiliar que mostra qual fase do extended mode estamos
     private void printPhaseHeader() {
-
         if (currentRound <= 3) {
-
             System.out.println(">>> MODE: DOWNWARD (3 Rolls, Fixed Category)");
-
         } else if (currentRound <= 7) {
-
             System.out.println(">>> MODE: 1ST ROLL (1 Roll, Choice Category)");
-
         } else {
-
             System.out.println(">>> MODE: FREE (3 Rolls, Choice Category)");
-
         }
-
     }
 
     //metodo que gerencia a vez do jogador de acordo com modo e fase.
@@ -100,63 +83,51 @@ public class GameEngine {
         int maxRolls;
         // Define o limite de lances se for extended mode: 1 para a fase '1st Roll', 3 para as demais
         // rodadas 5, 6, 7 e 8 so posso lancar o dado 1 vez
-
         if (isExtended) {
             maxRolls = (currentRound >= 4 && currentRound <= 7) ? 1 : 3;
         } else {
             maxRolls = 3;
         }
-
         for (int j = 0; j < maxRolls; j++) {
             diceManager.rollAvailableDice();
             diceManager.displayDice(); //mostra os dados lancados
             int rollsLeft = (maxRolls - 1) - j;// Se nao houver mais lancamentos ou se for a fase 1 de lancamento unico, termina
-
             if (rollsLeft == 0) {
                 break;
             }
             if (isExtended) {
                 printPhaseHeader();
             }
-
             System.out.println("Rolls left: " + rollsLeft);
             System.out.print("Which dice do you want to REROLL?\n" + "type the dice numbers from 0 to 4 or x to keep the values:   ");
             String input;
             String[] choices;
-
             //loop de validacao que nao relanca os dados se o usuario digitar errado
             while (true) {
-    input = scanner.nextLine().toUpperCase().trim();
-
-    // Se estiver vazio, volta ao topo e pede de novo
-    if (input.isEmpty()) {
-        continue;
-    }
-
-    choices = input.split("[\\s,]+");
-    boolean inputOK = true;
-
-    for (String s : choices) {
-        // Valida se é 0-4 ou X
-        if (!s.matches("[0-4]") && !s.equals("X")) {
-            System.out.print("Invalid! Use 0-4 or X: ");
-            inputOK = false;
-            break; // Sai do for
-        }
-    }
-
-    // Se o input foi válido, sai do while
-    if (inputOK) break;
-}
-
+                input = scanner.nextLine().toUpperCase().trim();
+                // Se estiver vazio, volta ao topo e pede de novo
+                if (input.isEmpty()) {
+                    continue;
+                }
+                choices = input.split("[\\s,]+");
+                boolean inputOK = true;
+                for (String s : choices) {
+                    // Valida se é 0-4 ou X
+                    if (!s.matches("[0-4]") && !s.equals("X")) {
+                        System.out.print("Invalid! Use 0-4 or X: ");
+                        inputOK = false;
+                        break; // Sai do for
+                    }
+                }
+                // Se o input foi válido, sai do while
+                if (inputOK) break;
+            }
             // 2. LÓGICA DE TRAVAR/DESTRAVAR (Agora fora do while de validação)
             if (choices[0].equals("X")) {
                 break; // Se o usuário digitou X, sai do loop de lançamentos e vai pontuar
             }
-
             // Trava todos os dados primeiro
             diceManager.lockAll();
-
             // Destrava APENAS os dados que o usuário escolheu para o próximo roll
             for (String s : choices) {
                 if (s.matches("[0-4]")) {
@@ -165,7 +136,6 @@ public class GameEngine {
                 }
             }
         }
-
         handleScoring(p);
     }
 
@@ -184,13 +154,10 @@ public class GameEngine {
     }
 
     private void handleScoring(Player p) {
-
         int[] finalDice = diceManager.getDiceValues(); // Pega os números (ex: 1, 3, 3, 4, 6)
         int categoryIndex;
-
         // 1. Definição da Categoria
         if (isExtended && currentRound <= 3) { //ou seja, DOWNWARD
-
             // Fase DOWNWARD: Categoria é automática (Round 1 -> Cat 0, Round 2 -> Cat 1...)
             categoryIndex = currentRound;
             System.out.println("Downward Phase: Scoring automatically in category " + categoryIndex);
@@ -200,15 +167,11 @@ public class GameEngine {
             categoryIndex = askForCategory();
         }
         // 2. Cálculo (Aqui chamamos a classe Scorer que vamos criar)
-
         int points = Scorer.getScore(categoryIndex, finalDice);
-
         //aviso que marcou 0 pontos
         if (points == 0) {
             System.out.println("ATTENTION: These dice scored 0 in " + Scorer.getCategoryName(categoryIndex));
         }
-
-
         try {
             p.getScoreboard().registerScore(categoryIndex, points);
             System.out.println("Points registered: " + points);
@@ -222,88 +185,70 @@ public class GameEngine {
         }
     }
 
+
     public void finishGame() {
-
-        System.out.println("\n" + "=".repeat(50));
-
-        System.out.println("GAME OVER - FINAL RESULTS");
-
-        System.out.println("=".repeat(50));
-
         // Sort players by score (descending)
-
         Player[] sortedPlayers = Arrays.copyOf(players, players.length);
-
         Arrays.sort(sortedPlayers, Comparator.comparingInt(Player::getTotalScore).reversed());
 
+        // Generate the output once
+        String output = generateScoreboardOutput(sortedPlayers);
 
-        // Display final scores
+        // Print to console
+        System.out.print(output);
 
+        // Offer to save results
+        handleSaveResults(sortedPlayers, output);
+    }
 
-        System.out.println("\nFINAL SCOREBOARD:");
-        System.out.println("-".repeat(40));
+    private String generateScoreboardOutput(Player[] sortedPlayers) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\n").append("=".repeat(50)).append("\n");
+        sb.append("GAME OVER - FINAL RESULTS\n");
+        sb.append("=".repeat(50)).append("\n");
+
+        sb.append("\nFINAL SCOREBOARD:\n");
+        sb.append("-".repeat(40)).append("\n");
 
         for (int i = 0; i < sortedPlayers.length; i++) {
             Player player = sortedPlayers[i];
-            /*String trophy = "";
-            if (i == 0) {
-                trophy = "#1 ";
-            } else if (i == 1 && sortedPlayers.length > 1) {
-                trophy = "#2 ";
-            } else if (i == 2 && sortedPlayers.length > 2) {
-                trophy = "3 ";
-            }*/
-            String rankLabel;
+            String rankLabel = player.getTotalScore() == sortedPlayers[0].getTotalScore() ? "#1 " : "   ";
 
-            // Lógica de Rank com Empate:
-            // Se a pontuação for igual à do primeiro colocado, ele também é #1
-            if (player.getTotalScore() == sortedPlayers[0].getTotalScore()) {
-                rankLabel = "#1 ";
-            } else {
-                rankLabel = "   "; // Espaço para manter o alinhamento
-            }
+            sb.append(String.format("%s%-20s: %5d points%n", rankLabel, player.getName(), player.getTotalScore()));
+            sb.append("  Categories:\n");
 
-
-            System.out.printf("%s%-20s: %5d points%n", /*trophy*/rankLabel, player.getName(), player.getTotalScore());
-            // Display individual category scores
-            System.out.println("  Categories:");
             for (int cat = 0; cat < 12; cat++) {
                 if (player.getScoreboard().isCategoryUsed(cat)) {
-                    System.out.printf("    %-18s: %3d%n", Scorer.getCategoryName(cat), player.getScoreboard().getScore(cat));
+                    sb.append(String.format("    %-18s: %3d%n", Scorer.getCategoryName(cat), player.getScoreboard().getScore(cat)));
                 }
             }
-            System.out.println();
+            sb.append("\n");
         }
-        // Announce winner
-        System.out.println("\n" + "*".repeat(20));
-        /*System.out.println("CONGRATULATIONS " + sortedPlayers[0].getName() + "! ");
-        System.out.println("YOU ARE THE YACHT CHAMPION!");
 
-        System.out.println("*".repeat(20)); */
+        sb.append("\n").append("*".repeat(20)).append("\n");
 
         int topScore = sortedPlayers[0].getTotalScore();
         boolean multiWinners = sortedPlayers.length > 1 && sortedPlayers[1].getTotalScore() == topScore;
 
         if (multiWinners) {
-            System.out.print("CONGRATULATIONS: ");
+            sb.append("CONGRATULATIONS: ");
             for (Player p : sortedPlayers) {
                 if (p.getTotalScore() == topScore) {
-                    System.out.print(p.getName() + " ");
+                    sb.append(p.getName()).append(" ");
                 }
             }
-            System.out.println("\nYOU ARE ALL YACHT CHAMPIONS!");
+            sb.append("\nYOU ARE ALL YACHT CHAMPIONS!\n");
         } else {
-            System.out.println("CONGRATULATIONS " + sortedPlayers[0].getName() + "! ");
-            System.out.println("YOU ARE THE YACHT CHAMPION!");
+            sb.append("CONGRATULATIONS ").append(sortedPlayers[0].getName()).append("! \n");
+            sb.append("YOU ARE THE YACHT CHAMPION!\n");
         }
+        sb.append("*".repeat(20)).append("\n");
 
-        System.out.println("*".repeat(20));
-
-        // Offer to save results
-        handleSaveResults(sortedPlayers);
+        return sb.toString();
     }
 
-    private void handleSaveResults(Player[] sortedPlayers) {
+    private void handleSaveResults(Player[] sortedPlayers, String output) {
         System.out.print("\nDo you want to save the results to a file? (y/n): ");
         String response = scanner.nextLine().trim().toLowerCase();
 
@@ -311,85 +256,193 @@ public class GameEngine {
             System.out.print("Enter file name (e.g., scores.txt): ");
             String fileName = scanner.nextLine().trim();
 
-
-            // 1. Resolve the path relative to where the JAR is running
             Path currentDir = Paths.get(".");
             Path destination = currentDir.resolve(fileName);
 
             try {
-                // Pass the RESOLVED path, not the raw string name
-                saveScoreboardToFile(sortedPlayers, destination);
+                saveScoreboardToFile(output, destination);
                 System.out.println("Results saved successfully to: " + destination.toAbsolutePath());
             } catch (IOException e) {
                 System.err.println("Error saving file: " + e.getMessage());
                 System.out.print("Try another path? (y/n): ");
                 String retry = scanner.nextLine().trim().toLowerCase();
 
-                // Retry logic
                 if (retry.equals("y") || retry.equals("yes")) {
-                    handleSaveResults(sortedPlayers);
+                    handleSaveResults(sortedPlayers, output);
                 }
             }
-
-
         }
     }
 
-    // Change the argument from String to Path
-    private void saveScoreboardToFile(Player[] sortedPlayers, Path path) throws IOException {
-
-        // Create parent directories if they don't exist (e.g., if user typed "results/scores.txt")
+    private void saveScoreboardToFile(String content, Path path) throws IOException {
         Path parentDir = path.getParent();
         if (parentDir != null) {
             Files.createDirectories(parentDir);
         }
 
-        // 2. Use Files.newBufferedWriter with StandardCharsets.UTF_8
-        // This ensures your special characters (borders) look the same on Windows, Mac, and Linux.
-        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-
-            writer.write("=".repeat(50));
-            writer.newLine();
-            writer.write("YACHT GAME - FINAL SCOREBOARD");
-            writer.newLine();
-            writer.write("=".repeat(50));
-            writer.newLine();
-            writer.newLine();
-
-            writer.write("Game Mode: " + (isExtended ? "Extended" : "Classic"));
-            writer.newLine();
-            writer.write("Players: " + sortedPlayers.length);
-            writer.newLine();
-            writer.write("-".repeat(50));
-            writer.newLine();
-            writer.newLine();
-
-            for (int i = 0; i < sortedPlayers.length; i++) {
-                Player player = sortedPlayers[i];
-                writer.write(String.format("%d. %s", i + 1, player.getName()));
-                writer.newLine();
-                writer.write(String.format("   Total Score: %d points", player.getTotalScore()));
-                writer.newLine();
-
-                writer.write("   Category Breakdown:");
-                writer.newLine();
-
-                // Assuming categories are 0-11
-                for (int cat = 0; cat < 12; cat++) {
-                    if (player.getScoreboard().isCategoryUsed(cat)) {
-                        // %n is the portable way to do a newline inside String.format
-                        writer.write(String.format("     %-18s: %3d%n", Scorer.getCategoryName(cat), player.getScoreboard().getScore(cat)));
-                    }
-                }
-                writer.newLine();
-            }
-
-            writer.write("=".repeat(50));
-            writer.newLine();
-            writer.write(String.format("WINNER: %s", sortedPlayers[0].getName()));
-            writer.newLine();
-            writer.write("=".repeat(50));
-        }
+        Files.writeString(path, content, StandardCharsets.UTF_8);
     }
 
 }
+
+//    public void finishGame() {
+//        System.out.println("\n" + "=".repeat(50));
+//        System.out.println("GAME OVER - FINAL RESULTS");
+//        System.out.println("=".repeat(50));
+//        // Sort players by score (descending)
+//        Player[] sortedPlayers = Arrays.copyOf(players, players.length);
+//        Arrays.sort(sortedPlayers, Comparator.comparingInt(Player::getTotalScore).reversed());
+//        // Display final scores
+//        System.out.println("\nFINAL SCOREBOARD:");
+//        System.out.println("-".repeat(40));
+//        for (int i = 0; i < sortedPlayers.length; i++) {
+//            Player player = sortedPlayers[i];
+//            String rankLabel;
+//            // Lógica de Rank com Empate:
+//            // Se a pontuação for igual à do primeiro colocado, ele também é #1
+//            if (player.getTotalScore() == sortedPlayers[0].getTotalScore()) {
+//                rankLabel = "#1 ";
+//            } else {
+//                rankLabel = "   "; // Espaço para manter o alinhamento
+//            }
+//            System.out.printf("%s%-20s: %5d points%n", /*trophy*/rankLabel, player.getName(), player.getTotalScore());
+//            // Display individual category scores
+//            System.out.println("  Categories:");
+//            for (int cat = 0; cat < 12; cat++) {
+//                if (player.getScoreboard().isCategoryUsed(cat)) {
+//                    System.out.printf("    %-18s: %3d%n", Scorer.getCategoryName(cat), player.getScoreboard().getScore(cat));
+//                }
+//            }
+//            System.out.println();
+//        }
+//
+//        // Announce winner
+//        System.out.println("\n" + "*".repeat(20));
+//        /*System.out.println("CONGRATULATIONS " + sortedPlayers[0].getName() + "! ");
+//        System.out.println("YOU ARE THE YACHT CHAMPION!");
+//        System.out.println("*".repeat(20)); */
+//        int topScore = sortedPlayers[0].getTotalScore();
+//        boolean multiWinners = sortedPlayers.length > 1 && sortedPlayers[1].getTotalScore() == topScore;
+//        if (multiWinners) {
+//            System.out.print("CONGRATULATIONS: ");
+//            for (Player p : sortedPlayers) {
+//                if (p.getTotalScore() == topScore) {
+//                    System.out.print(p.getName() + " ");
+//                }
+//            }
+//            System.out.println("\nYOU ARE ALL YACHT CHAMPIONS!");
+//        } else {
+//            System.out.println("CONGRATULATIONS " + sortedPlayers[0].getName() + "! ");
+//            System.out.println("YOU ARE THE YACHT CHAMPION!");
+//        }
+//        System.out.println("*".repeat(20));
+//        // Offer to save results
+//        handleSaveResults(sortedPlayers);
+//    }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//    private void handleSaveResults(Player[] sortedPlayers) {
+//        System.out.print("\nDo you want to save the results to a file? (y/n): ");
+//        String response = scanner.nextLine().trim().toLowerCase();
+//        if (response.startsWith("y")) {
+//            System.out.print("Enter file name (e.g., scores.txt): ");
+//            String fileName = scanner.nextLine().trim();
+//            // 1. Resolve the path relative to where the JAR is running
+//            Path currentDir = Paths.get(".");
+//            Path destination = currentDir.resolve(fileName);
+//            try {
+//                // Pass the RESOLVED path, not the raw string name
+//                saveScoreboardToFile(sortedPlayers, destination);
+//                System.out.println("Results saved successfully to: " + destination.toAbsolutePath());
+//            } catch (IOException e) {
+//                System.err.println("Error saving file: " + e.getMessage());
+//                System.out.print("Try another path? (y/n): ");
+//                String retry = scanner.nextLine().trim().toLowerCase();
+//                // Retry logic
+//                if (retry.equals("y") || retry.equals("yes")) {
+//                    handleSaveResults(sortedPlayers);
+//                }
+//            }
+//        }
+//    }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//    // Change the argument from String to Path
+//    private void saveScoreboardToFile(Player[] sortedPlayers, Path path) throws IOException {
+//        // Create parent directories if they don't exist (e.g., if user typed "results/scores.txt")
+//        Path parentDir = path.getParent();
+//        if (parentDir != null) {
+//            Files.createDirectories(parentDir);
+//        }
+//        // 2. Use Files.newBufferedWriter with StandardCharsets.UTF_8
+//        // This ensures your special characters (borders) look the same on Windows, Mac, and Linux.
+//        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+//            writer.write("=".repeat(50));
+//            writer.newLine();
+//            writer.write("YACHT GAME - FINAL SCOREBOARD");
+//            writer.newLine();
+//            writer.write("=".repeat(50));
+//            writer.newLine();
+//            writer.newLine();
+//            writer.write("Game Mode: " + (isExtended ? "Extended" : "Classic"));
+//            writer.newLine();
+//            writer.write("Players: " + sortedPlayers.length);
+//            writer.newLine();
+//            writer.write("-".repeat(50));
+//            writer.newLine();
+//            writer.newLine();
+//            for (int i = 0; i < sortedPlayers.length; i++) {
+//                Player player = sortedPlayers[i];
+//                writer.write(String.format("%d. %s", i + 1, player.getName()));
+//                writer.newLine();
+//                writer.write(String.format("   Total Score: %d points", player.getTotalScore()));
+//                writer.newLine();
+//                writer.write("   Category Breakdown:");
+//                writer.newLine();
+//                // Assuming categories are 0-11
+//                for (int cat = 0; cat < 12; cat++) {
+//                    if (player.getScoreboard().isCategoryUsed(cat)) {
+//                        // %n is the portable way to do a newline inside String.format
+//                        writer.write(String.format("     %-18s: %3d%n", Scorer.getCategoryName(cat), player.getScoreboard().getScore(cat)));
+//                    }
+//                }
+//                writer.newLine();
+//            }
+//            writer.write("=".repeat(50));
+//            writer.newLine();
+//            writer.write(String.format("WINNER: %s", sortedPlayers[0].getName()));
+//            writer.newLine();
+//            writer.write("=".repeat(50));
+//        }
+//    }
+//}

@@ -59,13 +59,13 @@ public class DiceManager {
                 "\n" +
                         "------------------CURRENT DICE TABLE-------------------" +
                         "\n" +
-                        "            ⟪    "
+                        "            ((   "
         );
         for (int i = 0; i < dice.length; i++) {
             System.out.print(dice[i].getValue() + "    ");
         }
         System.out.println(
-                "⟫" +
+                "))" +
                         "\n" +
                         "-------------------------------------------------------"
         );
