@@ -31,12 +31,10 @@ public class Die {
     /// If the die is locked, it retains its current value and is not rolled.
     /// Otherwise, generates a random value between 1 and 6 (inclusive).
     ///
-    /// @return the current value of the die after rolling (or unchanged if locked)
-    public int roll() {
+    public void roll() {
         if (!isLocked) {
             this.value = random.nextInt(FACES) + 1;
         }
-        return this.value;
     }
 
     /// Returns the current face value of the die.

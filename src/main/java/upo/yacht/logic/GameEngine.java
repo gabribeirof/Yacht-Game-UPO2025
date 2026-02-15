@@ -230,7 +230,7 @@ public class GameEngine {
 
         String output = generateScoreboardOutput(sortedPlayers);
         System.out.print(output);
-        handleSaveResults(sortedPlayers, output);
+        handleSaveResults(output);
     }
 
     /// Generates a formatted string containing final game results.
@@ -292,9 +292,8 @@ public class GameEngine {
     /// Offers to save the final scoreboard output to a user-specified file.
     /// Handles file I/O errors and provides retry options.
     ///
-    /// @param sortedPlayers array of players sorted by score
     /// @param output        the formatted scoreboard string to save
-    private void handleSaveResults(Player[] sortedPlayers, String output) {
+    private void handleSaveResults (String output) {
         System.out.print("\nDo you want to save the results to a file? (y/n): ");
         String response = scanner.nextLine().trim().toLowerCase();
 
@@ -314,7 +313,7 @@ public class GameEngine {
                 String retry = scanner.nextLine().trim().toLowerCase();
 
                 if (retry.equals("y") || retry.equals("yes")) {
-                    handleSaveResults(sortedPlayers, output);
+                    handleSaveResults(output);
                 }
             }
         }
