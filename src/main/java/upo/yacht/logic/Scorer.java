@@ -2,32 +2,16 @@ package upo.yacht.logic;
 
 import upo.yacht.logic.rules.*;
 
+/// Central scoring utility for calculating points in the Yacht game.
+///
+/// This class maintains a fixed array of all 12 scoring rules (categories)
+/// and provides static methods to calculate scores and retrieve category names.
+/// Each index (0-11) corresponds to a specific scoring rule implementation.
+///
+/// The rules are organized as follows:
+/// - Indices 0-5: Ones, Twos, Threes, Fours, Fives, Sixes
+/// - Indices 6-11: Full House, Four of a Kind, Small Straight, Big Straight, Choice, Yacht
 public class Scorer {
-    //Aqui eu nao estou criando objeto de ScoringRule, ate porque ScoringRule eh uma interface
-//    e interfaces nao sao instanciadas. O que estou fazendo eh criar uma COLECAO de objetos do
-//    tipo que implementa a Interface.
-//
-    //    Dentro do array ScoringRule terei objetos de classes concretas, onde, no caso, cada elemento
-    //   eh um objeto de uma categoria diferente.
-//
-    //   Cada categoria representa uma classe separada que implementa ScoringRule.
-    //   --> Quando uma classe implementa uma Interface temos uma relacao is-a, ou seja,
-    //   podemos dizer que a classe x EH a interface.
-    //   Ex: a classe YatchRule eh uma ScoringRule
-    //   Com isso, eu posso inserir essa classe em um array de ScoringRules.
-//
-    //   A vantagem de ter um array do tipo da Interface é que, quando você percorre o array,
-    //   você não precisa saber qual classe está lá dentro. O Java olha para o objeto no índice e diz:
-    //   "Eu não sei se você é Yacht ou Full House, mas eu sei que você assinou o contrato ScoringRule (voce
-    //   implementa ScoringRule), então você OBRIGATORIAMENTE tem o méto.do calculate e getCategory!"
-//
-    //    --> Proibido: ScoringRule regra = new ScoringRule();
-    //   (Interfaces não têm corpo, o Java não saberia o que fazer).
-//
-    //   --> Permitido: ScoringRule regra = new YachtRule();
-    //   (Uma variável chamada regra do tipo "Interface" apontando para um objeto "Real" (YachtRule)). */
-//
-    // Um array fixo que organiza as regras na ordem da tabela (0-11)
     private static final ScoringRule[] RULES = {
             new Ones(),
             new Twos(),
@@ -43,15 +27,24 @@ public class Scorer {
             new YachtRule()
     };
 
-    //    Quando GameEngine chamar Scorer.getScore(11, valoresDosDados), JAVA vai ate o index 11
-    //     de RULES, acessando YachtRule, vaai usar o metodo calculate de YachtRule aplicado
-    //     aos valores dos dados. Esse metodo calcula os pontos para aquele valor e categoria
-    //   e retorna os pontos, que sao por sua vez retornados por getScore.
+    /// Calculates the score for a given category and dice values.
+    ///
+    /// Retrieves the scoring rule at the specified index and applies
+    /// its calculation logic to the provided dice values. This method
+    /// uses polymorphism to call the appropriate calculate() implementation
+    /// without knowing the specific rule class.
+    ///
+    /// @param categoryIndex the category index (0-11)
+    /// @param diceValues    array of dice values to score
+    /// @return the calculated score for the specified category
     public static int getScore(int categoryIndex, int[] diceValues) {
-        // Basta chamar a regra correspondente ao índice
         return RULES[categoryIndex].calculate(diceValues);
     }
 
+    /// Returns the name of the category at the specified index.
+    ///
+    /// @param index the category index (0-11)
+    /// @return the category name as a string
     public static String getCategoryName(int index) {
         return RULES[index].getName();
     }

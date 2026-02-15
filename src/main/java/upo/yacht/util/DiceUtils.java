@@ -1,23 +1,19 @@
 package upo.yacht.util;
 
-/**
- * Utility class for dice operations in the Yacht game.
- * This class provides static helper methods to calculate sums and
- * determine the frequency of dice values. {final classes cannot be inherited}
- */
+/// Utility class for dice operations in the Yacht game.
+///
+/// Provides static helper methods to calculate sums and determine
+/// the frequency of dice values. This class is final and cannot be
+/// extended, and its constructor is private to prevent instantiation.
 public final class DiceUtils {
-    /**
-     * Private constructor to prevent instantiation of this utility class.
-     */
+    /// Private constructor to prevent instantiation of this utility class.
     private DiceUtils() {
     }
 
-    /**
-     * Calculates the sum of all dice values in the provided array.
-     *
-     * @param diceValues an array containing the face values of the dice (e.g., 1-6)
-     * @return the total sum of the dice values
-     */
+    /// Calculates the sum of all dice values in the provided array.
+    ///
+    /// @param diceValues array containing the face values of the dice (typically 1-6)
+    /// @return the total sum of all dice values
     public static int sumDice(int[] diceValues) {
         int sum = 0;
         for (int value : diceValues) {
@@ -26,16 +22,20 @@ public final class DiceUtils {
         return sum;
     }
 
-    /**
-     * Generates a frequency array representing how many times each dice value appears.
-     *
-     * @param diceValues an array containing the face values of the dice.
-     * @return an integer array where index i holds the count of dice showing face i.
-     */
+    /// Generates a frequency array counting occurrences of each dice value.
+    ///
+    /// Creates an array of size 7 where each index represents a die face value (1-6),
+    /// and the value at that index indicates how many times that face appeared.
+    /// Index 0 is unused. Values outside the 1-6 range are ignored.
+    ///
+    /// # Example
+    /// For dice `[2, 2, 5, 5, 5]`, the returned array would have:
+    /// - `frequency[2] = 2` (two 2's)
+    /// - `frequency[5] = 3` (three 5's)
+    ///
+    /// @param diceValues array containing the face values of the dice
+    /// @return integer array where index i contains the count of dice showing face value i
     public static int[] getDiceFrequency(int[] diceValues) {
-        // We need a slot for the number 6.
-        // In Java, to access index [6], the size must be 7.
-        // If we used diceValues.length (5) + 1 = 6, index [6] would not exist.
         int[] frequency = new int[7];
 
         for (int value : diceValues) {
