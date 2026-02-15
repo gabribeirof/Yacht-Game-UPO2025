@@ -41,7 +41,7 @@ public class YachtGame {
     /// The program exits with status `1` if invalid arguments are provided.
     ///
     /// @param args Command-line arguments
-    static void main(String[] args) {
+    public static void main(String[] args) {
         Long seed = null;           // Default to null (standard random)
         boolean isExtended = false;  // Default to normal mode (false)
 
