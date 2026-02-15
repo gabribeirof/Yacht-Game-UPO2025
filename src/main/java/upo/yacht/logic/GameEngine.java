@@ -126,22 +126,28 @@ public class GameEngine {
 
             //loop de validacao que nao relanca os dados se o usuario digitar errado
             while (true) {
-                input = scanner.nextLine().toUpperCase().trim();
-                if (input.isEmpty()) {
-                    choices = new String[]{"X"};
-                    break;
-                }
-                choices = input.split("[\\s,]+");
-                boolean inputOK = true;
-                for (String s : choices) {
-                    if (!s.matches("[0-4]") && !s.equals("X")) {
-                        System.out.print("Invalid! Use 0-4 or X: ");
-                        inputOK = false;
-                        break;
-                    }
-                }
-                if (inputOK) break;
-            }
+    input = scanner.nextLine().toUpperCase().trim();
+
+    // Se estiver vazio, volta ao topo e pede de novo
+    if (input.isEmpty()) {
+        continue;
+    }
+
+    choices = input.split("[\\s,]+");
+    boolean inputOK = true;
+
+    for (String s : choices) {
+        // Valida se é 0-4 ou X
+        if (!s.matches("[0-4]") && !s.equals("X")) {
+            System.out.print("Invalid! Use 0-4 or X: ");
+            inputOK = false;
+            break; // Sai do for
+        }
+    }
+
+    // Se o input foi válido, sai do while
+    if (inputOK) break;
+}
 
             // 2. LÓGICA DE TRAVAR/DESTRAVAR (Agora fora do while de validação)
             if (choices[0].equals("X")) {
